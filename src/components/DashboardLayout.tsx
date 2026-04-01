@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Landmark, LayoutDashboard, CreditCard, ArrowRightLeft, User, Bell, LogOut, Users, BarChart3, CheckSquare, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,13 +36,13 @@ const navByRole: Record<string, NavItem[]> = {
 
 const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout, role } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
   const items = navByRole[role || "client"] || [];
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    router.push("/login");
   };
 
   return (
@@ -47,18 +50,18 @@ const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
       {/* Sidebar */}
       <aside className="w-64 bg-card border-r border-border flex flex-col shrink-0 hidden lg:flex">
         <div className="p-5 border-b border-border">
-          <Link to="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Landmark className="h-7 w-7 text-primary" />
             <span className="text-lg font-bold text-foreground">BANKA</span>
           </Link>
         </div>
         <nav className="flex-1 p-3 space-y-1">
           {items.map((item) => {
-            const active = location.pathname === item.path;
+            const active = pathname === item.path;
             return (
               <Link
                 key={item.path}
-                to={item.path}
+                href={item.path}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
@@ -104,11 +107,11 @@ const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
         {/* Mobile nav */}
         <div className="lg:hidden flex overflow-x-auto border-b border-border bg-card px-2">
           {items.map((item) => {
-            const active = location.pathname === item.path;
+            const active = pathname === item.path;
             return (
               <Link
                 key={item.path}
-                to={item.path}
+                href={item.path}
                 className={`flex items-center gap-1.5 px-3 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
                   active ? "border-primary text-primary" : "border-transparent text-muted-foreground"
                 }`}
