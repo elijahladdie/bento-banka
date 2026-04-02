@@ -1,17 +1,16 @@
 "use client";
 
-import React, { createContext, useContext, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
 import type { User } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchMeThunk, loginThunk, logoutThunk } from "@/store/slices/authSlice";
+import { loginThunk, logoutThunk } from "@/store/slices/authSlice";
+import { apiClient, extractErrorMessage } from "@/lib/api-client";
 
 const normalizeRole = (user: User | null) => {
   const role = user?.userRoles?.[0]?.role?.slug;
-
   if (role === "client" || role === "cashier" || role === "manager") {
     return role;
   }
-
   return null;
 };
 
@@ -27,11 +26,26 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useAppDispatch();
-  const { user, role, isAuthenticated } = useAppSelector((state) => state.auth);
+  const authState = useAppSelector((state) => state.auth);
+  const [localUser, setLocalUser] = useState<User | null>(null);
+  const [initialized, setInitialized] = useState(false);
 
+  // On mount, try to restore user from localStorage (mock mode)
   useEffect(() => {
-    dispatch(fetchMeThunk());
-  }, [dispatch]);
+    try {
+      const raw = localStorage.getItem("banka_current_user");
+      if (raw) {
+        const user = JSON.parse(raw) as User;
+        setLocalUser(user);
+      }
+    } catch {}
+    setInitialized(true);
+  }, []);
+
+  // Sync from redux auth state
+  const user = authState.user ?? localUser;
+  const role = normalizeRole(user);
+  const isAuthenticated = !!user;
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -39,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (loginThunk.fulfilled.match(action)) {
         const nextUser = action.payload.user;
+        setLocalUser(nextUser);
         if (nextUser.status === "pending_approval") {
           return { success: false, error: "Your account is pending approval" };
         }
@@ -55,6 +70,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = useCallback(() => {
     dispatch(logoutThunk());
+    setLocalUser(null);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("banka_current_user");
+      localStorage.removeItem("banka_token");
+    }
   }, [dispatch]);
 
   return (
@@ -67,7 +87,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    // Return a safe default when used outside provider (e.g., during SSR)
     return {
       user: null,
       login: async () => ({ success: false, error: "Not authenticated" }),

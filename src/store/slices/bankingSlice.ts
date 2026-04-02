@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { apiClient, extractErrorMessage, unwrapSuccess } from "@/lib/api-client";
+import { apiClient, extractErrorMessage } from "@/lib/api-client";
 import type {
   Account,
-  ApiSuccess,
   Notification,
   Pagination,
   StatsAccountSeries,
@@ -64,13 +63,20 @@ const initialState: BankingState = {
   error: null
 };
 
+const unwrap = <T>(responseData: any): T => {
+  if (responseData && typeof responseData === "object" && "data" in responseData) {
+    return responseData.data as T;
+  }
+  return responseData as T;
+};
+
 export const fetchAccountsThunk = createAsyncThunk(
   "banking/accounts",
   async (params: Record<string, string | number | undefined> = {}, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get<ApiSuccess<Account[]>>("/accounts", { params });
+      const response = await apiClient.get("/accounts", { params });
       return {
-        items: unwrapSuccess(response.data),
+        items: unwrap<Account[]>(response.data),
         pagination: response.data.pagination ?? null
       } as ListPayload<Account>;
     } catch (error) {
@@ -83,9 +89,9 @@ export const fetchTransactionsThunk = createAsyncThunk(
   "banking/transactions",
   async (params: Record<string, string | number | undefined> = {}, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get<ApiSuccess<Transaction[]>>("/transactions", { params });
+      const response = await apiClient.get("/transactions", { params });
       return {
-        items: unwrapSuccess(response.data),
+        items: unwrap<Transaction[]>(response.data),
         pagination: response.data.pagination ?? null
       } as ListPayload<Transaction>;
     } catch (error) {
@@ -98,20 +104,16 @@ export const fetchUsersThunk = createAsyncThunk(
   "banking/users",
   async (params: Record<string, string | number | undefined> = {}, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get<ApiSuccess<User[]>>("/users", { params });
+      const response = await apiClient.get("/users", { params });
       return {
-        items: unwrapSuccess(response.data),
+        items: unwrap<User[]>(response.data),
         pagination: response.data.pagination ?? null
       } as ListPayload<User>;
     } catch (error) {
       const message = extractErrorMessage(error, "Failed to fetch users");
       if (message === "No users found") {
-        return {
-          items: [],
-          pagination: null
-        } as ListPayload<User>;
+        return { items: [], pagination: null } as ListPayload<User>;
       }
-
       return rejectWithValue(message);
     }
   }
@@ -120,17 +122,17 @@ export const fetchUsersThunk = createAsyncThunk(
 export const fetchStatsThunk = createAsyncThunk("banking/stats", async (_, { rejectWithValue }) => {
   try {
     const [overviewResponse, txResponse, accountsResponse, usersResponse] = await Promise.all([
-      apiClient.get<ApiSuccess<StatsOverview>>("/stats/overview"),
-      apiClient.get<ApiSuccess<StatsTransactionSeries>>("/stats/transactions"),
-      apiClient.get<ApiSuccess<StatsAccountSeries>>("/stats/accounts"),
-      apiClient.get<ApiSuccess<StatsUserSeries>>("/stats/users")
+      apiClient.get("/stats/overview"),
+      apiClient.get("/stats/transactions"),
+      apiClient.get("/stats/accounts"),
+      apiClient.get("/stats/users")
     ]);
 
     return {
-      overview: unwrapSuccess(overviewResponse.data),
-      transactions: unwrapSuccess(txResponse.data),
-      accounts: unwrapSuccess(accountsResponse.data),
-      users: unwrapSuccess(usersResponse.data)
+      overview: unwrap<StatsOverview>(overviewResponse.data),
+      transactions: unwrap<StatsTransactionSeries>(txResponse.data),
+      accounts: unwrap<StatsAccountSeries>(accountsResponse.data),
+      users: unwrap<StatsUserSeries>(usersResponse.data)
     };
   } catch (error) {
     return rejectWithValue(extractErrorMessage(error, "Failed to fetch statistics"));
@@ -141,8 +143,8 @@ export const transferFundsThunk = createAsyncThunk(
   "banking/transfer",
   async (payload: { fromAccount: string; toAccount: string; amount: number; description: string }, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post<ApiSuccess<unknown>>("/transactions/transfer", payload);
-      return unwrapSuccess(response.data);
+      const response = await apiClient.post("/transactions/transfer", payload);
+      return unwrap(response.data);
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error, "Transfer failed"));
     }
@@ -153,8 +155,8 @@ export const depositFundsThunk = createAsyncThunk(
   "banking/deposit",
   async (payload: { toAccount: string; amount: number; description: string }, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post<ApiSuccess<unknown>>("/transactions/deposit", payload);
-      return unwrapSuccess(response.data);
+      const response = await apiClient.post("/transactions/deposit", payload);
+      return unwrap(response.data);
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error, "Deposit failed"));
     }
@@ -165,8 +167,8 @@ export const withdrawFundsThunk = createAsyncThunk(
   "banking/withdraw",
   async (payload: { fromAccount: string; amount: number; description: string }, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post<ApiSuccess<unknown>>("/transactions/withdraw", payload);
-      return unwrapSuccess(response.data);
+      const response = await apiClient.post("/transactions/withdraw", payload);
+      return unwrap(response.data);
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error, "Withdrawal failed"));
     }
@@ -175,8 +177,8 @@ export const withdrawFundsThunk = createAsyncThunk(
 
 export const approveAccountThunk = createAsyncThunk("banking/approveAccount", async (id: string, { rejectWithValue }) => {
   try {
-    const response = await apiClient.patch<ApiSuccess<Account>>(`/accounts/${id}/approve`, { reason: "Approved by manager" });
-    return unwrapSuccess(response.data);
+    const response = await apiClient.patch(`/accounts/${id}/approve`, { reason: "Approved by manager" });
+    return unwrap<Account>(response.data);
   } catch (error) {
     return rejectWithValue(extractErrorMessage(error, "Failed to approve account"));
   }
@@ -186,10 +188,8 @@ export const rejectAccountThunk = createAsyncThunk(
   "banking/rejectAccount",
   async (payload: { id: string; reason: string }, { rejectWithValue }) => {
     try {
-      const response = await apiClient.patch<ApiSuccess<Account>>(`/accounts/${payload.id}/reject`, {
-        reason: payload.reason
-      });
-      return unwrapSuccess(response.data);
+      const response = await apiClient.patch(`/accounts/${payload.id}/reject`, { reason: payload.reason });
+      return unwrap<Account>(response.data);
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error, "Failed to reject account"));
     }
@@ -200,10 +200,8 @@ export const updateUserStatusThunk = createAsyncThunk(
   "banking/userStatus",
   async (payload: { id: string; status: string }, { rejectWithValue }) => {
     try {
-      const response = await apiClient.patch<ApiSuccess<{ id: string; status: string }>>(`/users/${payload.id}/status`, {
-        status: payload.status
-      });
-      return unwrapSuccess(response.data);
+      const response = await apiClient.patch(`/users/${payload.id}/status`, { status: payload.status });
+      return unwrap<{ id: string; status: string }>(response.data);
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error, "Failed to update user status"));
     }

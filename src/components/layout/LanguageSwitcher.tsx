@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useState, useEffect } from "react";
 
 const langs = [
   { code: "kin", label: "Kiny", flag: "🇷🇼" },
@@ -10,19 +9,18 @@ const langs = [
 ] as const;
 
 export default function LanguageSwitcher() {
-  const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
+  const [locale, setLocale] = useState("en");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("banka_lang");
+    if (saved) setLocale(saved);
+  }, []);
 
   const switchLang = (code: string) => {
     localStorage.setItem("banka_lang", code);
-    const parts = pathname.split("/").filter(Boolean);
-    if (parts[0] === "kin" || parts[0] === "en" || parts[0] === "fr") {
-      parts[0] = code;
-      router.push(`/${parts.join("/")}`);
-      return;
-    }
-    router.push(pathname);
+    setLocale(code);
+    // Reload to pick up new language
+    window.location.reload();
   };
 
   return (
