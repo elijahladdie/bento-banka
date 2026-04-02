@@ -12,28 +12,26 @@ export const apiClient = axios.create({
   }
 });
 
-apiClient.interceptors.request.use((config) => {
-  if (typeof window === "undefined") {
-    return config;
+// Note: token interceptor kept but mock-api interceptor will short-circuit before network
+
+export const unwrapSuccess = <T>(payload: any): T => {
+  // Handle both { data: T } and direct T formats from mock
+  if (payload && typeof payload === "object" && "data" in payload) {
+    return payload.data as T;
   }
-
-  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
-
-export const unwrapSuccess = <T>(payload: ApiSuccess<T>): T => payload.data;
+  return payload as T;
+};
 
 export const extractErrorMessage = (error: unknown, fallback = "Something went wrong") => {
-  if (!(error instanceof AxiosError)) {
-    return fallback;
+  if (error && typeof error === "object" && "response" in error) {
+    const responseData = (error as any).response?.data;
+    return responseData?.resp_msg ?? responseData?.message ?? fallback;
   }
-
-  const responseData = error.response?.data as ApiError | undefined;
-  return responseData?.message ?? fallback;
+  if (error instanceof AxiosError) {
+    const responseData = error.response?.data as ApiError | undefined;
+    return responseData?.message ?? fallback;
+  }
+  return fallback;
 };
 
 export const authStorage = {
@@ -51,7 +49,6 @@ export const authStorage = {
     if (typeof window === "undefined") {
       return null;
     }
-
     return localStorage.getItem(TOKEN_STORAGE_KEY);
   }
 };
