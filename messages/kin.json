@@ -1,0 +1,166 @@
+{
+  "brand": {
+    "name": "BANKA",
+    "slogan": "Banki y'Abaturage"
+  },
+  "common": {
+    "loading": "Birimo gutegurwa...",
+    "cancel": "Kureka",
+    "confirm": "Emeza",
+    "save": "Bika",
+    "back": "Subira inyuma"
+  },
+  "nav": {
+    "dashboard": "Ikibaho nyamukuru",
+    "accounts": "Konti",
+    "transfer": "Kohereza",
+    "clients": "Abakiliya",
+    "transactions": "Ibikorwa",
+    "notifications": "Amatangazo",
+    "profile": "Umwirondoro",
+    "users": "Abakoresha",
+    "approvals": "Ibyemezo",
+    "statistics": "Imibare",
+    "signOut": "Sohoka"
+  },
+  "layout": {
+    "profile": "Umwirondoro",
+    "bankOfCitizens": "Banki y'Abaturage"
+  },
+  "landing": {
+    "heroTitle": "Banki y'Abaturage",
+    "heroSubtitle": "Yizewe. Yoroshye. Iyawe.",
+    "openAccount": "Fungura konti",
+    "signIn": "Injira",
+    "whyTitle": "Kuki BANKA ?",
+    "howTitle": "Uko bikorwa",
+    "footerLine": "Banki y'Abaturage — Yizewe. Yoroshye. Iyawe.",
+    "copyright": "© 2026 BANKA. Uburenganzira bwose burabitswe.",
+    "features": {
+      "multiAccount": { "title": "Ubuyobozi bwa konti nyinshi", "desc": "Fungura kandi ucunge konti zo kuzigama, zisanzwe n'iza fixed ahantu hamwe." },
+      "transfers": { "title": "Kohereza ako kanya", "desc": "Ohereza amafaranga hagati ya konti zawe ako kanya kandi nta mafaranga y'inyongera." },
+      "roles": { "title": "Umutekano ushingiye ku ruhare", "desc": "Kugenzura kwinjira mu byiciro bitatu: abakiliya, abakoresha amafaranga, n'abayobozi." },
+      "audit": { "title": "Amateka yuzuye", "desc": "Buri gikorwa cyandikwa hamwe n'igihe n'umubare w'icyo gikorwa." },
+      "uptime": { "title": "Kuboneka igihe cyose", "desc": "Geraho dashboard yawe ya banki igihe icyo ari cyo cyose, ahantu hose, ku gikoresho icyo ari cyo cyose." },
+      "encryption": { "title": "Urwego rwa banki mu kubika amakuru", "desc": "Amakuru yawe arinzwe n'uburyo bwo kubika amakuru bwemewe n'ikoranabuhanga." }
+    },
+    "steps": {
+      "signUp": { "title": "Iyandikishe", "desc": "Fungura konti yawe mu minota mike ukoresheje amakuru shingiro." },
+      "approved": { "title": "Emezwaho", "desc": "Umuyobozi asuzuma kandi akemeza konti yawe." },
+      "accounts": { "title": "Fungura konti", "desc": "Fungura konti zo kuzigama, zisanzwe cyangwa fixed." },
+      "transact": { "title": "Kora ibikorwa", "desc": "Shyiraho, bukura kandi wohereze amafaranga mu buryo bwizewe." }
+    },
+    "stats": { "clients": "Abakiliya", "transactions": "Ibikorwa", "uptime": "Kuboneka", "roles": "Urwego rw'uruhare" }
+  },
+  "dashboard": {
+    "client": {
+      "greetingMorning": "Mwaramutse",
+      "greetingAfternoon": "Mwiriwe",
+      "greetingEvening": "Mwiriwe neza",
+      "accounts": "konti",
+      "editProfile": "Hindura umwirondoro",
+      "totalBalance": "Amafaranga yose",
+      "acrossAccounts": "Muri",
+      "recentActivity": "Ibikorwa bya vuba",
+      "viewAll": "Reba byose",
+      "noRecentTransactions": "Nta bikorwa bya vuba bihari",
+      "myAccounts": "Konti zanjye",
+      "new": "Nshya",
+      "quickTransfer": "Iyohereza ryihuse",
+      "selectSource": "Hitamo konti itangirwaho",
+      "destination": "Nimero ya konti yoherezwaho",
+      "amount": "Umubare",
+      "transfer": "Ohereza",
+      "notifications": "Amatangazo",
+      "noNotifications": "Nta matangazo ahari ubu"
+    },
+    "manager": {
+      "activeClients": "Abakiliya bakora",
+      "totalAccounts": "Konti zose",
+      "transactionVolume": "Ingano y'ibikorwa",
+      "pendingApprovals": "Ibyemezo bitegereje",
+      "recentTransactions": "Ibikorwa bya vuba",
+      "reference": "Referansi",
+      "type": "Ubwoko",
+      "amount": "Umubare",
+      "status": "Imimerere",
+      "noTransactions": "Nta bikorwa bihari",
+      "newClientRegistration": "Iyandikwa rishya ry'umukiliya",
+      "approve": "Emeza",
+      "reject": "Hakana",
+      "approveAccount": "Emeza konti",
+      "noPendingApprovals": "Nta byemezo bitegereje",
+      "allUsers": "Abakoresha bose",
+      "user": "Umukoresha",
+      "email": "Imeyili",
+      "role": "Uruhare",
+      "joined": "Yinjiye",
+      "noUsers": "Nta bakoresha babonetse"
+    },
+    "cashier": {
+      "welcome": "Murakaza neza",
+      "deposits": "Kubitsa",
+      "withdrawals": "Kubikuza",
+      "volume": "Ingano",
+      "searchClient": "Shakisha umukiliya",
+      "searchPlaceholder": "Shakisha ukoresheje izina, imeyili cyangwa nimero ya konti...",
+      "noClientsFound": "Nta bakiliya babonetse",
+      "deposit": "Bitsa",
+      "withdraw": "Bikuza",
+      "recentOperations": "Ibikorwa bya vuba",
+      "reference": "Referansi",
+      "type": "Ubwoko",
+      "amount": "Umubare",
+      "status": "Imimerere",
+      "date": "Itariki",
+      "noOperations": "Nta bikorwa bihari ubu"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Murakaza neza",
+      "subtitle": "Injira kuri konti yawe",
+      "email": "Imeyili",
+      "password": "Ijambobanga",
+      "remember": "Unyibuke",
+      "forgot": "Wibagiwe ijambo banga?",
+      "submit": "Injira",
+      "signupPrompt": "Nta konti ufite?",
+      "signup": "Iyandikishe",
+      "demoHint": "Konti z'igerageza (ijambo banga iryo ari ryo ryose):",
+      "client": "Umukiliya",
+      "cashier": "Ukoresha amafaranga",
+      "manager": "Umuyobozi"
+    },
+    "signup": {
+      "title": "Fungura konti yawe",
+      "successTitle": "Konti yarakozwe!",
+      "successBody": "Konti yawe iracyategereje kwemezwa n'umuyobozi. Uzabimenyeshwa kuri e-mail.",
+      "redirecting": "Birimo kukujyana ku buryo bwo kwinjira...",
+      "firstName": "Izina rya mbere",
+      "lastName": "Izina rya nyuma",
+      "email": "Imeyili",
+      "phone": "Nimero ya terefone",
+      "nationalId": "Indangamuntu",
+      "dob": "Itariki y'amavuko",
+      "address": "Aderesi",
+      "password": "Ijambo banga",
+      "confirmPassword": "Emeza ijambo banga",
+      "terms": "Nemeye amategeko n'amabwiriza",
+      "submit": "Fungura konti",
+      "loginPrompt": "Usanzwe ufite konti?",
+      "login": "Injira"
+    },
+    "forgot": {
+      "title": "Kugarura ijambo banga",
+      "success": "Reba kuri e-mail yawe amabwiriza yo kugarura ijambo banga.",
+      "email": "Imeyili",
+      "submit": "Ohereza ihuza ryo kugarura",
+      "sending": "Birimo koherezwa...",
+      "back": "Subira ku kwinjira"
+    }
+  },
+  "errors": {
+    "invalidCredentials": "Amakuru winjije siyo"
+  }
+}

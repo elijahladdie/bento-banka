@@ -1,0 +1,189 @@
+{
+  "brand": {
+    "name": "BANKA",
+    "slogan": "Bank of Citizens"
+  },
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "back": "Back"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "accounts": "Accounts",
+    "transfer": "Transfer",
+    "clients": "Clients",
+    "transactions": "Transactions",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "users": "Users",
+    "approvals": "Approvals",
+    "statistics": "Statistics",
+    "signOut": "Sign Out"
+  },
+  "layout": {
+    "profile": "Profile",
+    "bankOfCitizens": "Bank of Citizens"
+  },
+  "landing": {
+    "heroTitle": "Bank of Citizens",
+    "heroSubtitle": "Secure. Simple. Yours.",
+    "openAccount": "Open an Account",
+    "signIn": "Sign In",
+    "whyTitle": "Why BANKA?",
+    "howTitle": "How It Works",
+    "footerLine": "Bank of Citizens — Secure. Simple. Yours.",
+    "copyright": "© 2026 BANKA. All rights reserved.",
+    "features": {
+      "multiAccount": {
+        "title": "Multi-Account Management",
+        "desc": "Create and manage savings, checking, and fixed deposit accounts from one place."
+      },
+      "transfers": {
+        "title": "Instant Transfers",
+        "desc": "Transfer funds between your accounts instantly with zero fees."
+      },
+      "roles": {
+        "title": "Role-Based Security",
+        "desc": "Three-tier access control: Clients, Cashiers, and Managers."
+      },
+      "audit": {
+        "title": "Full Audit Trail",
+        "desc": "Every transaction is logged with timestamps and reference numbers."
+      },
+      "uptime": {
+        "title": "24/7 Access",
+        "desc": "Access your banking dashboard anytime, anywhere, from any device."
+      },
+      "encryption": {
+        "title": "Bank-Grade Encryption",
+        "desc": "Your data is protected with industry-standard encryption protocols."
+      }
+    },
+    "steps": {
+      "signUp": { "title": "Sign Up", "desc": "Create your account in minutes with basic information." },
+      "approved": { "title": "Get Approved", "desc": "A manager reviews and approves your account." },
+      "accounts": { "title": "Create Accounts", "desc": "Open savings, checking, or fixed deposit accounts." },
+      "transact": { "title": "Transact", "desc": "Deposit, withdraw, and transfer funds securely." }
+    },
+    "stats": {
+      "clients": "Clients",
+      "transactions": "Transactions",
+      "uptime": "Uptime",
+      "roles": "Role Levels"
+    }
+  },
+  "dashboard": {
+    "client": {
+      "greetingMorning": "Good morning",
+      "greetingAfternoon": "Good afternoon",
+      "greetingEvening": "Good evening",
+      "accounts": "accounts",
+      "editProfile": "Edit Profile",
+      "totalBalance": "Total Balance",
+      "acrossAccounts": "Across",
+      "recentActivity": "Recent Activity",
+      "viewAll": "View All",
+      "noRecentTransactions": "No recent transactions",
+      "myAccounts": "My Accounts",
+      "new": "New",
+      "quickTransfer": "Quick Transfer",
+      "selectSource": "Select source account",
+      "destination": "Destination account number",
+      "amount": "Amount",
+      "transfer": "Transfer",
+      "notifications": "Notifications",
+      "noNotifications": "No notifications yet"
+    },
+    "manager": {
+      "activeClients": "Active Clients",
+      "totalAccounts": "Total Accounts",
+      "transactionVolume": "Transaction Volume",
+      "pendingApprovals": "Pending Approvals",
+      "recentTransactions": "Recent Transactions",
+      "reference": "Reference",
+      "type": "Type",
+      "amount": "Amount",
+      "status": "Status",
+      "noTransactions": "No transactions",
+      "newClientRegistration": "New client registration",
+      "approve": "Approve",
+      "reject": "Reject",
+      "approveAccount": "Approve Account",
+      "noPendingApprovals": "No pending approvals",
+      "allUsers": "All Users",
+      "user": "User",
+      "email": "Email",
+      "role": "Role",
+      "joined": "Joined",
+      "noUsers": "No users found"
+    },
+    "cashier": {
+      "welcome": "Welcome",
+      "deposits": "Deposits",
+      "withdrawals": "Withdrawals",
+      "volume": "Volume",
+      "searchClient": "Search Client",
+      "searchPlaceholder": "Search by name, email, or account number...",
+      "noClientsFound": "No clients found",
+      "deposit": "Deposit",
+      "withdraw": "Withdraw",
+      "recentOperations": "Recent Operations",
+      "reference": "Reference",
+      "type": "Type",
+      "amount": "Amount",
+      "status": "Status",
+      "date": "Date",
+      "noOperations": "No operations yet"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your account",
+      "email": "Email Address",
+      "password": "Password",
+      "remember": "Remember me",
+      "forgot": "Forgot Password?",
+      "submit": "Sign In",
+      "signupPrompt": "Don't have an account?",
+      "signup": "Sign Up",
+      "demoHint": "Demo Accounts (any password):",
+      "client": "Client",
+      "cashier": "Cashier",
+      "manager": "Manager"
+    },
+    "signup": {
+      "title": "Create your account",
+      "successTitle": "Account Created!",
+      "successBody": "Your account is pending manager approval. You'll be notified by email.",
+      "redirecting": "Redirecting to login...",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone Number",
+      "nationalId": "National ID",
+      "dob": "Date of Birth",
+      "address": "Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "terms": "I agree to the Terms & Conditions",
+      "submit": "Create Account",
+      "loginPrompt": "Already have an account?",
+      "login": "Sign In"
+    },
+    "forgot": {
+      "title": "Reset Password",
+      "success": "Check your email for reset instructions.",
+      "email": "Email",
+      "submit": "Send Reset Link",
+      "sending": "Sending...",
+      "back": "Back to Login"
+    }
+  },
+  "errors": {
+    "invalidCredentials": "Invalid credentials"
+  }
+}

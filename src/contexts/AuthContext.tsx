@@ -1,9 +1,23 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
-import { User, mockUsers } from "@/data/mockData";
+"use client";
+
+import React, { createContext, useContext, useCallback, useEffect } from "react";
+import type { User } from "@/types";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchMeThunk, loginThunk, logoutThunk } from "@/store/slices/authSlice";
+
+const normalizeRole = (user: User | null) => {
+  const role = user?.userRoles?.[0]?.role?.slug;
+
+  if (role === "client" || role === "cashier" || role === "manager") {
+    return role;
+  }
+
+  return null;
+};
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; role?: string | null; error?: string }>;
   logout: () => void;
   isAuthenticated: boolean;
   role: string | null;
@@ -12,30 +26,39 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    const stored = localStorage.getItem("banka_user");
-    return stored ? JSON.parse(stored) : null;
-  });
+  const dispatch = useAppDispatch();
+  const { user, role, isAuthenticated } = useAppSelector((state) => state.auth);
 
-  const login = useCallback(async (email: string, _password: string) => {
-    const found = mockUsers.find((u) => u.email === email);
-    if (!found) return { success: false, error: "Invalid email or password" };
-    if (found.status === "pending_approval") return { success: false, error: "Your account is pending approval" };
-    if (found.status === "inactive") return { success: false, error: "Your account has been deactivated" };
-    setUser(found);
-    localStorage.setItem("banka_user", JSON.stringify(found));
-    return { success: true };
-  }, []);
+  useEffect(() => {
+    dispatch(fetchMeThunk());
+  }, [dispatch]);
+
+  const login = useCallback(
+    async (email: string, password: string) => {
+      const action = await dispatch(loginThunk({ email, password }));
+
+      if (loginThunk.fulfilled.match(action)) {
+        const nextUser = action.payload.user;
+        if (nextUser.status === "pending_approval") {
+          return { success: false, error: "Your account is pending approval" };
+        }
+        if (nextUser.status === "inactive") {
+          return { success: false, error: "Your account has been deactivated" };
+        }
+        return { success: true, role: normalizeRole(nextUser) };
+      }
+
+      return { success: false, error: String(action.payload ?? "Login failed") };
+    },
+    [dispatch]
+  );
 
   const logout = useCallback(() => {
-    setUser(null);
-    localStorage.removeItem("banka_user");
-  }, []);
-
-  const role = user?.userRoles[0]?.role.slug ?? null;
+    dispatch(logoutThunk());
+  }, [dispatch]);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user, role }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated, role }}>
       {children}
     </AuthContext.Provider>
   );
@@ -43,6 +66,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  if (!context) {
+    // Return a safe default when used outside provider (e.g., during SSR)
+    return {
+      user: null,
+      login: async () => ({ success: false, error: "Not authenticated" }),
+      logout: () => {},
+      isAuthenticated: false,
+      role: null,
+    };
+  }
   return context;
 };
