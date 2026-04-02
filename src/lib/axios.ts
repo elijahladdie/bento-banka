@@ -1,32 +1,7 @@
-import axios from "axios";
+/**
+ * Legacy axios instance — now just re-exports apiClient for backward compat.
+ */
+import { apiClient } from "./api-client";
 
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api",
-  withCredentials: true,
-  headers: { "Content-Type": "application/json" },
-});
-
-api.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const lang = localStorage.getItem("banka_lang") ?? "en";
-    config.headers["Accept-Language"] = lang;
-  }
-  return config;
-});
-
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401 && typeof window !== "undefined") {
-       const currentPath = window.location.pathname;
-
-
-      if (currentPath !== "/login") {
-        window.location.href = "/login";
-      }
-    }
-    return Promise.reject(error);
-  },
-);
-
+const api = apiClient;
 export default api;
