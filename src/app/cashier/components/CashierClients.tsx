@@ -1,33 +1,48 @@
 "use client";
 
 import DashboardLayout from "@/components/DashboardLayout";
-import { mockAccounts, formatCurrency, getStatusBadgeClass } from "@/data/mockData";
+import { formatCurrency, getStatusBadgeClass } from "@/lib/format";
 import { Search, ArrowDownRight, ArrowUpRight } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { searchClientUsers } from "@/services/banking.service";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchAccountsThunk, fetchUsersThunk } from "@/store/slices/bankingSlice";
+import GlassCard from "@/components/ui/GlassCard";
+import GlassInput from "@/components/ui/GlassInput";
+import GlassButton from "@/components/ui/GlassButton";
+import { useUiText } from "@/lib/ui-text";
 
 const CashierClients = () => {
+  const dispatch = useAppDispatch();
+  const { users, accounts } = useAppSelector((state) => state.banking);
+  const { t } = useUiText();
   const [search, setSearch] = useState("");
 
-  const clients = searchClientUsers(search);
+  useEffect(() => {
+    dispatch(fetchUsersThunk({ role: "client", limit: 100 }));
+    dispatch(fetchAccountsThunk({ limit: 200 }));
+  }, [dispatch]);
+
+  const clients = users.filter((user) => {
+    const isClient = user.userRoles?.[0]?.role?.slug === "client" || (user as unknown as { roles?: string[] }).roles?.includes("client");
+    const match = `${user.firstName} ${user.lastName ?? ""} ${user.email}`.toLowerCase().includes(search.toLowerCase());
+    return isClient && match;
+  });
 
   return (
     <DashboardLayout>
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold text-foreground">Search Clients</h1>
-        <div className="bento-card">
+        <h1 className="text-2xl font-bold text-foreground">{t("nav.clients", "Search Clients")}</h1>
+        <GlassCard>
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search by name or email..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 bg-secondary border-border" />
+            <GlassInput placeholder="Search by name or email..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
           </div>
           {search && (
             <div className="bento-grid">
               {clients.map((c) => {
-                const accs = mockAccounts.filter((a) => a.ownerId === c.id);
+                const accs = accounts.filter((a) => a.ownerId === c.id);
                 return (
-                  <div key={c.id} className="rounded-xl border border-border bg-secondary/50 p-4">
+                  <div key={c.id} className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-bg)] p-4">
                     <div className="flex items-center gap-3 mb-3">
                       <img src={c.profilePicture} alt="" className="w-10 h-10 rounded-full object-cover" />
                       <div>
@@ -38,18 +53,18 @@ const CashierClients = () => {
                     </div>
                     <p className="text-xs text-muted-foreground mb-2">{accs.length} account(s)</p>
                     {accs.filter((a) => a.status === "Active").map((a) => (
-                      <div key={a.id} className="rounded-lg bg-card p-3 mb-2 flex items-center justify-between">
+                      <div key={a.id} className="rounded-lg border border-[var(--glass-border)] bg-[rgba(255,255,255,0.04)] p-3 mb-2 flex items-center justify-between">
                         <div>
                           <p className="text-sm font-mono text-muted-foreground">{a.accountNumber}</p>
-                          <p className="text-xs text-muted-foreground capitalize">{a.type} • {formatCurrency(a.balance)}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{a.type} • {formatCurrency(Number(a.balance))}</p>
                         </div>
                         <div className="flex gap-1.5">
-                          <Button variant="outline" size="sm" className="text-xs gap-1">
+                          <GlassButton variant="secondary" className="text-xs gap-1 px-3 py-2">
                             <ArrowDownRight className="h-3 w-3" /> Deposit
-                          </Button>
-                          <Button variant="outline" size="sm" className="text-xs gap-1">
+                          </GlassButton>
+                          <GlassButton variant="secondary" className="text-xs gap-1 px-3 py-2">
                             <ArrowUpRight className="h-3 w-3" /> Withdraw
-                          </Button>
+                          </GlassButton>
                         </div>
                       </div>
                     ))}
@@ -59,7 +74,7 @@ const CashierClients = () => {
               {clients.length === 0 && <p className="text-sm text-muted-foreground col-span-full text-center py-4">No clients found</p>}
             </div>
           )}
-        </div>
+        </GlassCard>
       </div>
     </DashboardLayout>
   );

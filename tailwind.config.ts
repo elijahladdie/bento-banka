@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -15,6 +16,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "Fira Code", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -77,11 +79,18 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        "gold-light": "#F0D060",
+        "gold-dark": "#A8880A",
+        "navy-mid": "#0d1b3e",
+        "navy-deep": "#1a0a2e",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        glass: "20px",
+        "glass-sm": "12px",
+        "glass-lg": "28px",
       },
       keyframes: {
         "accordion-down": {
@@ -92,12 +101,36 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        orbFloat: {
+          "0%": { transform: "translate(0,0) scale(1)" },
+          "100%": { transform: "translate(30px,-30px) scale(1.05)" },
+        },
+        slideUp: {
+          from: { transform: "translateY(30px)", opacity: "0" },
+          to: { transform: "translateY(0)", opacity: "1" },
+        },
+        fadeIn: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        slideInRight: {
+          from: { transform: "translateX(60px)", opacity: "0" },
+          to: { transform: "translateX(0)", opacity: "1" },
+        },
+        spin: {
+          to: { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "orb-float": "orbFloat 8s ease-in-out infinite alternate",
+        "slide-up": "slideUp 0.3s cubic-bezier(0.4,0,0.2,1)",
+        "fade-in": "fadeIn 0.2s ease",
+        "slide-right": "slideInRight 0.3s cubic-bezier(0.4,0,0.2,1)",
+        spin: "spin 0.7s linear infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

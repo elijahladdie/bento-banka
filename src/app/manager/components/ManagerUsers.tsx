@@ -1,68 +1,72 @@
 "use client";
 
 import DashboardLayout from "@/components/DashboardLayout";
-import { mockUsers, getStatusBadgeClass } from "@/data/mockData";
-import { useState } from "react";
+import { getStatusBadgeClass } from "@/lib/format";
+import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import GlassCard from "@/components/ui/GlassCard";
+import GlassInput from "@/components/ui/GlassInput";
+import GlassTable from "@/components/ui/GlassTable";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchUsersThunk } from "@/store/slices/bankingSlice";
+import { useUiText } from "@/lib/ui-text";
 
 const ManagerUsers = () => {
+  const dispatch = useAppDispatch();
+  const { users: allUsers } = useAppSelector((state) => state.banking);
+  const { t } = useUiText();
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
 
-  const users = mockUsers.filter((u) => {
-    const matchSearch = (u.firstName + " " + u.lastName + " " + u.email).toLowerCase().includes(search.toLowerCase());
-    const matchRole = roleFilter === "all" || u.userRoles.some((r) => r.role.slug === roleFilter);
+  useEffect(() => {
+    dispatch(fetchUsersThunk({ limit: 200 }));
+  }, [dispatch]);
+
+  const users = allUsers.filter((u) => {
+    const matchSearch = `${u.firstName} ${u.lastName ?? ""} ${u.email}`.toLowerCase().includes(search.toLowerCase());
+    const roleSlug = u.userRoles?.[0]?.role?.slug ?? (u as unknown as { roles?: string[] }).roles?.[0];
+    const matchRole = roleFilter === "all" || roleSlug === roleFilter;
     return matchSearch && matchRole;
   });
 
   return (
     <DashboardLayout>
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold text-foreground">User Management</h1>
-        <div className="bento-card">
+        <h1 className="text-2xl font-bold text-foreground">{t("nav.users", "User Management")}</h1>
+        <GlassCard>
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 bg-secondary border-border" />
+              <GlassInput placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
             </div>
-            <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className="bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground">
+            <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className="glass-input">
               <option value="all">All Roles</option>
               <option value="client">Clients</option>
               <option value="cashier">Cashiers</option>
               <option value="manager">Managers</option>
             </select>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-muted-foreground">
-                  <th className="text-left py-2 font-medium">User</th>
-                  <th className="text-left py-2 font-medium">Email</th>
-                  <th className="text-left py-2 font-medium">Role</th>
-                  <th className="text-left py-2 font-medium">Status</th>
-                  <th className="text-left py-2 font-medium">Joined</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((u) => (
-                  <tr key={u.id} className="border-b border-border last:border-0 hover:bg-secondary/50 transition-colors">
-                    <td className="py-3">
-                      <div className="flex items-center gap-2">
-                        <img src={u.profilePicture} alt="" className="w-8 h-8 rounded-full object-cover" />
-                        <span className="font-medium text-foreground">{u.firstName} {u.lastName}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 text-muted-foreground">{u.email}</td>
-                    <td className="py-3 capitalize">{u.userRoles[0]?.role.name}</td>
-                    <td className="py-3"><span className={getStatusBadgeClass(u.status)}>{u.status.replace("_", " ")}</span></td>
-                    <td className="py-3 text-muted-foreground text-xs">{new Date(u.createdAt).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+          <GlassTable
+            columns={[
+              {
+                key: "user",
+                header: "User",
+                render: (u) => (
+                  <div className="flex items-center gap-2">
+                    <img src={u.profilePicture} alt="" className="w-8 h-8 rounded-full object-cover" />
+                    <span className="font-medium text-foreground">{u.firstName} {u.lastName}</span>
+                  </div>
+                )
+              },
+              { key: "email", header: "Email" },
+              { key: "role", header: "Role", render: (u) => <span className="capitalize">{u.userRoles?.[0]?.role?.name ?? u.userRoles?.[0]?.role?.slug ?? (u as unknown as { roles?: string[] }).roles?.[0]}</span> },
+              { key: "status", header: "Status", render: (u) => <span className={getStatusBadgeClass(u.status)}>{u.status.replace("_", " ")}</span> },
+              { key: "joined", header: "Joined", render: (u) => new Date(u.createdAt).toLocaleDateString() }
+            ]}
+            data={users.map((u) => ({ ...u, id: String(u.id), joined: u.createdAt }))}
+            emptyMessage="No users found"
+          />
+        </GlassCard>
       </div>
     </DashboardLayout>
   );

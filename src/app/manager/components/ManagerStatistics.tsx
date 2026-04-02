@@ -1,21 +1,45 @@
 "use client";
 
 import DashboardLayout from "@/components/DashboardLayout";
-import { mockTransactions, mockUsers, mockAccounts, formatCurrency } from "@/data/mockData";
+import { formatCurrency } from "@/lib/format";
 import { BarChart3, TrendingUp, PieChart } from "lucide-react";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchAccountsThunk, fetchStatsThunk, fetchTransactionsThunk, fetchUsersThunk } from "@/store/slices/bankingSlice";
+import GlassCard from "@/components/ui/GlassCard";
 
 const ManagerStatistics = () => {
-  const totalDeposits = mockTransactions.filter((t) => t.type === "deposit" && t.status === "completed").reduce((s, t) => s + t.amount, 0);
-  const totalWithdrawals = mockTransactions.filter((t) => t.type === "withdraw" && t.status === "completed").reduce((s, t) => s + t.amount, 0);
-  const totalTransfers = mockTransactions.filter((t) => t.type === "transfer" && t.status === "completed").reduce((s, t) => s + t.amount, 0);
+  const dispatch = useAppDispatch();
+  const { transactions, users, accounts, statsTransactions, statsUsers } = useAppSelector((state) => state.banking);
 
-  const savingAccounts = mockAccounts.filter((a) => a.type === "saving").length;
-  const fixedAccounts = mockAccounts.filter((a) => a.type === "fixed").length;
-  const checkingAccounts = mockAccounts.filter((a) => a.type === "checking").length;
+  useEffect(() => {
+    dispatch(fetchTransactionsThunk({ limit: 200 }));
+    dispatch(fetchUsersThunk({ limit: 200 }));
+    dispatch(fetchAccountsThunk({ limit: 200 }));
+    dispatch(fetchStatsThunk());
+  }, [dispatch]);
 
-  const clientCount = mockUsers.filter((u) => u.userRoles.some((r) => r.role.slug === "client")).length;
-  const cashierCount = mockUsers.filter((u) => u.userRoles.some((r) => r.role.slug === "cashier")).length;
-  const managerCount = mockUsers.filter((u) => u.userRoles.some((r) => r.role.slug === "manager")).length;
+  const completedTransactions = transactions.filter((transaction) => transaction.status === "completed");
+  const totalDeposits = completedTransactions
+    .filter((transaction) => transaction.type === "deposit")
+    .reduce((sum, transaction) => sum + Number(transaction.amount), 0);
+  const totalWithdrawals = completedTransactions
+    .filter((transaction) => transaction.type === "withdraw")
+    .reduce((sum, transaction) => sum + Number(transaction.amount), 0);
+  const totalTransfers = completedTransactions
+    .filter((transaction) => transaction.type === "transfer")
+    .reduce((sum, transaction) => sum + Number(transaction.amount), 0);
+
+  const savingAccounts = accounts.filter((account) => account.type === "saving").length;
+  const fixedAccounts = accounts.filter((account) => account.type === "fixed").length;
+
+  const roleCount = (role: string) =>
+    statsUsers.find((item) => item.role === role)?.count ??
+    users.filter((user) => user.userRoles?.[0]?.role?.slug === role).length;
+
+  const clientCount = roleCount("client");
+  const cashierCount = roleCount("cashier");
+  const managerCount = roleCount("manager");
 
   return (
     <DashboardLayout>
@@ -24,53 +48,52 @@ const ManagerStatistics = () => {
 
         {/* Volume by type */}
         <div className="bento-grid">
-          <div className="bento-card">
+          <GlassCard>
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="h-5 w-5 text-emerald-400" />
               <h3 className="font-semibold text-foreground">Deposits</h3>
             </div>
             <p className="text-2xl font-bold text-emerald-400">{formatCurrency(totalDeposits)}</p>
-            <p className="text-xs text-muted-foreground mt-1">{mockTransactions.filter((t) => t.type === "deposit").length} transactions</p>
+            <p className="text-xs text-muted-foreground mt-1">{statsTransactions.find((item) => item.type === "deposit")?._count.id ?? transactions.filter((t) => t.type === "deposit").length} transactions</p>
             <div className="mt-3 h-2 rounded-full bg-secondary overflow-hidden">
               <div className="h-full bg-emerald-400 rounded-full" style={{ width: "75%" }} />
             </div>
-          </div>
-          <div className="bento-card">
+          </GlassCard>
+          <GlassCard>
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="h-5 w-5 text-destructive" />
               <h3 className="font-semibold text-foreground">Withdrawals</h3>
             </div>
             <p className="text-2xl font-bold text-destructive">{formatCurrency(totalWithdrawals)}</p>
-            <p className="text-xs text-muted-foreground mt-1">{mockTransactions.filter((t) => t.type === "withdraw").length} transactions</p>
+            <p className="text-xs text-muted-foreground mt-1">{statsTransactions.find((item) => item.type === "withdraw")?._count.id ?? transactions.filter((t) => t.type === "withdraw").length} transactions</p>
             <div className="mt-3 h-2 rounded-full bg-secondary overflow-hidden">
               <div className="h-full bg-destructive rounded-full" style={{ width: "40%" }} />
             </div>
-          </div>
-          <div className="bento-card">
+          </GlassCard>
+          <GlassCard>
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="h-5 w-5 text-blue-400" />
               <h3 className="font-semibold text-foreground">Transfers</h3>
             </div>
             <p className="text-2xl font-bold text-blue-400">{formatCurrency(totalTransfers)}</p>
-            <p className="text-xs text-muted-foreground mt-1">{mockTransactions.filter((t) => t.type === "transfer").length} transactions</p>
+            <p className="text-xs text-muted-foreground mt-1">{statsTransactions.find((item) => item.type === "transfer")?._count.id ?? transactions.filter((t) => t.type === "transfer").length} transactions</p>
             <div className="mt-3 h-2 rounded-full bg-secondary overflow-hidden">
               <div className="h-full bg-blue-400 rounded-full" style={{ width: "55%" }} />
             </div>
-          </div>
+          </GlassCard>
         </div>
 
         {/* Account & User breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bento-card">
+          <GlassCard>
             <div className="flex items-center gap-2 mb-4">
               <PieChart className="h-5 w-5 text-primary" />
               <h3 className="font-semibold text-foreground">Account Types</h3>
             </div>
             <div className="space-y-3">
               {[
-                { label: "Savings", count: savingAccounts, color: "bg-primary", pct: (savingAccounts / mockAccounts.length) * 100 },
-                { label: "Fixed Deposit", count: fixedAccounts, color: "bg-blue-400", pct: (fixedAccounts / mockAccounts.length) * 100 },
-                { label: "Checking", count: checkingAccounts, color: "bg-emerald-400", pct: (checkingAccounts / mockAccounts.length) * 100 },
+                { label: "Savings", count: savingAccounts, color: "bg-primary", pct: (savingAccounts / (accounts.length || 1)) * 100 },
+                { label: "Fixed Deposit", count: fixedAccounts, color: "bg-blue-400", pct: (fixedAccounts / (accounts.length || 1)) * 100 }
               ].map((item) => (
                 <div key={item.label}>
                   <div className="flex justify-between text-sm mb-1">
@@ -83,17 +106,17 @@ const ManagerStatistics = () => {
                 </div>
               ))}
             </div>
-          </div>
-          <div className="bento-card">
+          </GlassCard>
+          <GlassCard>
             <div className="flex items-center gap-2 mb-4">
               <BarChart3 className="h-5 w-5 text-primary" />
               <h3 className="font-semibold text-foreground">User Roles</h3>
             </div>
             <div className="space-y-3">
               {[
-                { label: "Clients", count: clientCount, color: "bg-primary", pct: (clientCount / mockUsers.length) * 100 },
-                { label: "Cashiers", count: cashierCount, color: "bg-amber-400", pct: (cashierCount / mockUsers.length) * 100 },
-                { label: "Managers", count: managerCount, color: "bg-emerald-400", pct: (managerCount / mockUsers.length) * 100 },
+                { label: "Clients", count: clientCount, color: "bg-primary", pct: (clientCount / (users.length || 1)) * 100 },
+                { label: "Cashiers", count: cashierCount, color: "bg-amber-400", pct: (cashierCount / (users.length || 1)) * 100 },
+                { label: "Managers", count: managerCount, color: "bg-emerald-400", pct: (managerCount / (users.length || 1)) * 100 }
               ].map((item) => (
                 <div key={item.label}>
                   <div className="flex justify-between text-sm mb-1">
@@ -106,7 +129,7 @@ const ManagerStatistics = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </GlassCard>
         </div>
       </div>
     </DashboardLayout>

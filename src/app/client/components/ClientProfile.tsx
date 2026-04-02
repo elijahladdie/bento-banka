@@ -2,45 +2,47 @@
 
 import DashboardLayout from "@/components/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import GlassCard from "@/components/ui/GlassCard";
+import GlassButton from "@/components/ui/GlassButton";
+import GlassInput from "@/components/ui/GlassInput";
+import { useUiText } from "@/lib/ui-text";
 
 const ClientProfile = () => {
   const { user } = useAuth();
+  const { t } = useUiText();
 
   return (
     <DashboardLayout>
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold text-foreground">Profile</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t("nav.profile", "Profile")}</h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bento-card flex flex-col items-center text-center">
+          <GlassCard className="flex flex-col items-center text-center">
             <img src={user?.profilePicture} alt="" className="w-24 h-24 rounded-full ring-4 ring-primary/20 object-cover mb-4" />
             <h2 className="text-xl font-bold text-foreground">{user?.firstName} {user?.lastName}</h2>
             <p className="text-sm text-muted-foreground">{user?.email}</p>
             <p className="text-xs text-muted-foreground mt-2">Member since {new Date(user?.createdAt || "").toLocaleDateString()}</p>
-            <Button variant="outline" className="mt-4" size="sm">Change Photo</Button>
-          </div>
-          <div className="bento-card">
+            <GlassButton variant="secondary" className="mt-4 px-4 py-2">Change Photo</GlassButton>
+          </GlassCard>
+          <GlassCard>
             <h3 className="font-semibold text-foreground mb-4">Personal Information</h3>
             <div className="space-y-3">
-              <div className="space-y-1.5"><Label>Full Name</Label><Input defaultValue={`${user?.firstName} ${user?.lastName}`} className="bg-secondary border-border" /></div>
-              <div className="space-y-1.5"><Label>Phone</Label><Input defaultValue={user?.phoneNumber} className="bg-secondary border-border" /></div>
-              <div className="space-y-1.5"><Label>Email</Label><Input defaultValue={user?.email} disabled className="bg-secondary border-border opacity-60" /></div>
-              <div className="space-y-1.5"><Label>National ID</Label><Input defaultValue={user?.nationalId} disabled className="bg-secondary border-border opacity-60" /></div>
-              <Button variant="hero" size="sm">Save Changes</Button>
+              <GlassInput label="Full Name" defaultValue={`${user?.firstName} ${user?.lastName}`} />
+              <GlassInput label="Phone" defaultValue={user?.phoneNumber ?? ""} />
+              <GlassInput label="Email" defaultValue={user?.email ?? ""} disabled />
+              <GlassInput label="National ID" defaultValue={user?.nationalId ?? ""} disabled />
+              <GlassButton variant="primary" className="px-4 py-2">Save Changes</GlassButton>
             </div>
-          </div>
+          </GlassCard>
         </div>
-        <div className="bento-card max-w-lg">
+        <GlassCard className="max-w-lg">
           <h3 className="font-semibold text-foreground mb-4">Change Password</h3>
           <div className="space-y-3">
-            <div className="space-y-1.5"><Label>Current Password</Label><Input type="password" className="bg-secondary border-border" /></div>
-            <div className="space-y-1.5"><Label>New Password</Label><Input type="password" className="bg-secondary border-border" /></div>
-            <div className="space-y-1.5"><Label>Confirm New Password</Label><Input type="password" className="bg-secondary border-border" /></div>
-            <Button variant="hero" size="sm">Update Password</Button>
+            <GlassInput type="password" label="Current Password" />
+            <GlassInput type="password" label="New Password" />
+            <GlassInput type="password" label="Confirm New Password" />
+            <GlassButton variant="primary" className="px-4 py-2">Update Password</GlassButton>
           </div>
-        </div>
+        </GlassCard>
       </div>
     </DashboardLayout>
   );

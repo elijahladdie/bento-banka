@@ -71,7 +71,7 @@ export const fetchAccountsThunk = createAsyncThunk(
       const response = await apiClient.get<ApiSuccess<Account[]>>("/accounts", { params });
       return {
         items: unwrapSuccess(response.data),
-        pagination: response.data.success.pagination ?? null
+        pagination: response.data.pagination ?? null
       } as ListPayload<Account>;
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error, "Failed to fetch accounts"));
@@ -86,7 +86,7 @@ export const fetchTransactionsThunk = createAsyncThunk(
       const response = await apiClient.get<ApiSuccess<Transaction[]>>("/transactions", { params });
       return {
         items: unwrapSuccess(response.data),
-        pagination: response.data.success.pagination ?? null
+        pagination: response.data.pagination ?? null
       } as ListPayload<Transaction>;
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error, "Failed to fetch transactions"));
@@ -101,7 +101,7 @@ export const fetchUsersThunk = createAsyncThunk(
       const response = await apiClient.get<ApiSuccess<User[]>>("/users", { params });
       return {
         items: unwrapSuccess(response.data),
-        pagination: response.data.success.pagination ?? null
+        pagination: response.data.pagination ?? null
       } as ListPayload<User>;
     } catch (error) {
       const message = extractErrorMessage(error, "Failed to fetch users");

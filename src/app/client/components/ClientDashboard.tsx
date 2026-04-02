@@ -1,47 +1,71 @@
 "use client";
 
+import { useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
-import { formatCurrency, getStatusBadgeClass } from "@/data/mockData";
+import { formatCurrency } from "@/lib/format";
 import { CreditCard, ArrowUpRight, ArrowDownRight, ArrowRightLeft, Bell, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { getClientAccounts, getClientNotifications, getClientRecentTransactions } from "@/services/banking.service";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchAccountsThunk, fetchTransactionsThunk } from "@/store/slices/bankingSlice";
+import GlassCard from "@/components/ui/GlassCard";
+import GlassButton from "@/components/ui/GlassButton";
+import GlassInput from "@/components/ui/GlassInput";
+import GlassSelect from "@/components/ui/GlassSelect";
+import StatusBadge from "@/components/ui/StatusBadge";
+import { BentoGrid, BentoItem } from "@/components/ui/BentoGrid";
+import { useUiText } from "@/lib/ui-text";
 
 const ClientDashboard = () => {
   const { user } = useAuth();
+  const dispatch = useAppDispatch();
+  const { accounts: allAccounts, transactions } = useAppSelector((state) => state.banking);
   const router = useRouter();
-  const accounts = getClientAccounts(user?.id);
-  const totalBalance = accounts.reduce((s, a) => s + a.balance, 0);
-  const notifications = getClientNotifications(user?.id);
-  const recentTxns = getClientRecentTransactions(user?.id);
+  const { t } = useUiText();
+
+  useEffect(() => {
+    dispatch(fetchAccountsThunk({}));
+    dispatch(fetchTransactionsThunk({ limit: 10 }));
+  }, [dispatch]);
+
+  const accounts = allAccounts.filter((account) => account.ownerId === user?.id);
+  const totalBalance = accounts.reduce((sum, account) => sum + Number(account.balance), 0);
+  const accountIds = new Set(accounts.map((account) => account.id));
+  const recentTxns = transactions
+    .filter((txn) => accountIds.has(String(txn.fromAccount)) || accountIds.has(String(txn.toAccount)))
+    .slice(0, 5);
 
   const getTimeGreeting = () => {
     const h = new Date().getHours();
-    if (h < 12) return "Good morning";
-    if (h < 18) return "Good afternoon";
-    return "Good evening";
+    if (h < 12) return t("dashboard.client.greetingMorning", "Good morning");
+    if (h < 18) return t("dashboard.client.greetingAfternoon", "Good afternoon");
+    return t("dashboard.client.greetingEvening", "Good evening");
   };
 
   return (
     <DashboardLayout>
       <div className="space-y-4">
-        {/* Row 1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="bento-card lg:col-span-2">
+        <BentoGrid>
+          <BentoItem size="wide">
+            <GlassCard className="h-full">
             <div className="flex items-center gap-4">
               <img src={user?.profilePicture} alt="" className="w-14 h-14 rounded-full ring-2 ring-primary/30 object-cover" />
               <div>
                 <h1 className="text-2xl font-bold text-foreground">{getTimeGreeting()}, {user?.firstName}!</h1>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className={getStatusBadgeClass(user?.status || "")}>{user?.status?.replace("_", " ")}</span>
+                  <StatusBadge value={user?.status || "inactive"} />
                   <span className="text-muted-foreground text-sm">•</span>
-                  <span className="text-muted-foreground text-sm">{accounts.length} account{accounts.length !== 1 ? "s" : ""}</span>
+                  <span className="text-muted-foreground text-sm">
+                    {accounts.length} {t("dashboard.client.accounts", "accounts")}
+                  </span>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="bento-card">
+            </GlassCard>
+          </BentoItem>
+
+          <BentoItem size="small">
+            <GlassCard className="h-full">
             <div className="flex items-center gap-3 mb-2">
               <img src={user?.profilePicture} alt="" className="w-10 h-10 rounded-full object-cover" />
               <div>
@@ -49,21 +73,25 @@ const ClientDashboard = () => {
                 <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
             </div>
-            <button onClick={() => router.push("/client/profile")} className="text-xs text-primary hover:underline">Edit Profile →</button>
-          </div>
-        </div>
+            <GlassButton variant="secondary" onClick={() => router.push("/client/profile")}>
+              {t("dashboard.client.editProfile", "Edit Profile")}
+            </GlassButton>
+            </GlassCard>
+          </BentoItem>
 
-        {/* Row 2 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="bento-card">
-            <p className="text-sm text-muted-foreground mb-1">Total Balance</p>
+          <BentoItem size="small">
+            <GlassCard className="h-full">
+            <p className="text-sm text-muted-foreground mb-1">{t("dashboard.client.totalBalance", "Total Balance")}</p>
             <p className="text-3xl font-bold text-primary">{formatCurrency(totalBalance)}</p>
-            <p className="text-xs text-muted-foreground mt-1">across {accounts.length} accounts</p>
-          </div>
-          <div className="bento-card lg:col-span-2">
+            <p className="text-xs text-muted-foreground mt-1">{t("dashboard.client.acrossAccounts", "Across")} {accounts.length} {t("dashboard.client.accounts", "accounts")}</p>
+            </GlassCard>
+          </BentoItem>
+
+          <BentoItem size="wide">
+            <GlassCard className="h-full">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-foreground">Recent Activity</h3>
-              <button className="text-xs text-primary hover:underline">View All</button>
+              <h3 className="font-semibold text-foreground">{t("dashboard.client.recentActivity", "Recent Activity")}</h3>
+              <button className="text-xs text-primary hover:underline">{t("dashboard.client.viewAll", "View All")}</button>
             </div>
             <div className="space-y-2">
               {recentTxns.map((t) => (
@@ -78,71 +106,64 @@ const ClientDashboard = () => {
                     </div>
                   </div>
                   <span className={`text-sm font-medium ${t.type === "deposit" ? "text-emerald-400" : t.type === "withdraw" ? "text-destructive" : "text-blue-400"}`}>
-                    {t.type === "deposit" ? "+" : "-"}{formatCurrency(t.amount)}
+                    {t.type === "deposit" ? "+" : "-"}{formatCurrency(Number(t.amount))}
                   </span>
                 </div>
               ))}
-              {recentTxns.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">No recent transactions</p>}
+              {recentTxns.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">{t("dashboard.client.noRecentTransactions", "No recent transactions")}</p>}
             </div>
-          </div>
-        </div>
+            </GlassCard>
+          </BentoItem>
 
-        {/* Row 3 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="bento-card lg:col-span-2">
+          <BentoItem size="wide">
+            <GlassCard className="h-full">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-foreground">My Accounts</h3>
-              <Button variant="outline" size="sm" className="gap-1"><Plus className="h-3.5 w-3.5" /> New</Button>
+              <h3 className="font-semibold text-foreground">{t("dashboard.client.myAccounts", "My Accounts")}</h3>
+              <GlassButton variant="secondary" className="gap-1"><Plus className="h-3.5 w-3.5" /> {t("dashboard.client.new", "New")}</GlassButton>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {accounts.map((a) => (
-                <div key={a.id} className="rounded-xl border border-border bg-secondary/50 p-4 hover:bg-secondary transition-colors cursor-pointer" onClick={() => router.push("/client/accounts")}>
+                <div key={a.id} className="glass-card rounded-xl p-4 cursor-pointer" onClick={() => router.push("/client/accounts")}>
                   <div className="flex items-center justify-between mb-2">
                     <CreditCard className="h-5 w-5 text-primary" />
-                    <span className={getStatusBadgeClass(a.status)}>{a.status}</span>
+                    <StatusBadge value={a.status} />
                   </div>
                   <p className="text-xs text-muted-foreground font-mono">••••{a.accountNumber.slice(-4)}</p>
                   <p className="text-xs text-muted-foreground capitalize mt-0.5">{a.type}</p>
-                  <p className="text-lg font-bold text-primary mt-2">{formatCurrency(a.balance)}</p>
+                  <p className="text-lg font-bold text-primary mt-2">{formatCurrency(Number(a.balance))}</p>
                 </div>
               ))}
             </div>
-          </div>
-          <div className="bento-card">
-            <h3 className="font-semibold text-foreground mb-3">Quick Transfer</h3>
-            <div className="space-y-3">
-              <select className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground">
-                <option>Select source account</option>
-                {accounts.filter((a) => a.status === "Active").map((a) => (
-                  <option key={a.id} value={a.id}>••••{a.accountNumber.slice(-4)} — {formatCurrency(a.balance)}</option>
-                ))}
-              </select>
-              <input placeholder="Destination account number" className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground" />
-              <input type="number" placeholder="Amount" className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground" />
-              <Button variant="hero" className="w-full" size="sm">Transfer</Button>
-            </div>
-          </div>
-        </div>
+            </GlassCard>
+          </BentoItem>
 
-        {/* Notifications */}
-        <div className="bento-card">
+          <BentoItem size="small">
+            <GlassCard className="h-full">
+            <h3 className="font-semibold text-foreground mb-3">{t("dashboard.client.quickTransfer", "Quick Transfer")}</h3>
+            <div className="space-y-3">
+              <GlassSelect
+                options={accounts.filter((a) => a.status === "Active").map((a) => ({ value: a.id, label: `••••${a.accountNumber.slice(-4)} — ${formatCurrency(Number(a.balance))}` }))}
+                placeholder={t("dashboard.client.selectSource", "Select source account")}
+              />
+              <GlassInput placeholder={t("dashboard.client.destination", "Destination account number")} />
+              <GlassInput type="number" placeholder={t("dashboard.client.amount", "Amount")} />
+              <GlassButton fullWidth>{t("dashboard.client.transfer", "Transfer")}</GlassButton>
+            </div>
+            </GlassCard>
+          </BentoItem>
+
+          <BentoItem size="full">
+            <GlassCard>
           <div className="flex items-center gap-2 mb-3">
             <Bell className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold text-foreground">Notifications</h3>
+            <h3 className="font-semibold text-foreground">{t("dashboard.client.notifications", "Notifications")}</h3>
           </div>
           <div className="space-y-2">
-            {notifications.map((n) => (
-              <div key={n.id} className={`flex items-start gap-3 p-3 rounded-lg ${n.isRead ? "bg-transparent" : "bg-primary/5"}`}>
-                <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${n.isRead ? "bg-muted" : "bg-primary"}`} />
-                <div>
-                  <p className="text-sm font-medium text-foreground">{n.title}</p>
-                  <p className="text-xs text-muted-foreground">{n.message}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{new Date(n.createdAt).toLocaleDateString()}</p>
-                </div>
-              </div>
-            ))}
+            <p className="text-sm text-muted-foreground text-center py-4">{t("dashboard.client.noNotifications", "No notifications yet")}</p>
           </div>
-        </div>
+            </GlassCard>
+          </BentoItem>
+        </BentoGrid>
       </div>
     </DashboardLayout>
   );

@@ -5,9 +5,19 @@ import type { User } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchMeThunk, loginThunk, logoutThunk } from "@/store/slices/authSlice";
 
+const normalizeRole = (user: User | null) => {
+  const role = user?.userRoles?.[0]?.role?.slug;
+
+  if (role === "client" || role === "cashier" || role === "manager") {
+    return role;
+  }
+
+  return null;
+};
+
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; role?: string | null; error?: string }>;
   logout: () => void;
   isAuthenticated: boolean;
   role: string | null;
@@ -35,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (nextUser.status === "inactive") {
           return { success: false, error: "Your account has been deactivated" };
         }
-        return { success: true };
+        return { success: true, role: normalizeRole(nextUser) };
       }
 
       return { success: false, error: String(action.payload ?? "Login failed") };

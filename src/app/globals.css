@@ -2,9 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap");
 
 :root {
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-blur: blur(20px);
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-elevated: 0 16px 48px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.3);
+  --color-success: #4ade80;
+  --color-error: #f87171;
+  --color-warning: #fbbf24;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --transition-fast: all 0.15s ease;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
   --bg-primary: linear-gradient(135deg, #0a0f1e 0%, #0d1b3e 40%, #1a0a2e 100%);
   --bg-secondary: linear-gradient(160deg, #0d1b3e 0%, #1a0a2e 60%, #0a1628 100%);
 
@@ -13,8 +34,8 @@
   --glass-bg-active: rgba(255, 255, 255, 0.16);
   --glass-border: rgba(255, 255, 255, 0.15);
   --glass-border-hover: rgba(255, 255, 255, 0.3);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
-  --glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.3);
+  --glass-shadow: var(--shadow-soft);
+  --glass-shadow-hover: var(--shadow-elevated);
   --glass-blur: blur(20px);
   --glass-blur-heavy: blur(40px);
   --glass-radius: 20px;
@@ -45,11 +66,11 @@
   --info-border: rgba(59, 130, 246, 0.35);
   --info-text: #60a5fa;
 
-  --transition-fast: all 0.15s ease;
   --transition-base: all 0.25s ease;
   --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-  --font-primary: "Inter", "Geist", sans-serif;
+  --font-primary: "Manrope", "Geist", sans-serif;
+  --font-display: "Space Grotesk", "Manrope", sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
@@ -60,6 +81,13 @@ body {
   background-attachment: fixed;
   font-family: var(--font-primary);
   color: var(--text-primary);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
 }
 
 body {
@@ -124,7 +152,7 @@ body {
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
-  border-radius: var(--glass-radius);
+  border-radius: var(--radius-lg);
   box-shadow: var(--glass-shadow);
   transition: var(--transition-base);
   position: relative;
@@ -160,8 +188,93 @@ body {
   backdrop-filter: var(--glass-blur-heavy);
   -webkit-backdrop-filter: var(--glass-blur-heavy);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--glass-radius-lg);
+  border-radius: var(--radius-xl);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.bento-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.bento-grid-system {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.bento-item {
+  grid-column: span 12;
+}
+
+.bento-item-small {
+  grid-column: span 3;
+}
+
+.bento-item-wide {
+  grid-column: span 6;
+}
+
+.bento-item-tall {
+  grid-column: span 3;
+  min-height: 320px;
+}
+
+.bento-item-large {
+  grid-column: span 6;
+  min-height: 320px;
+}
+
+.bento-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.bento-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.bento-span-2 {
+  grid-column: span 2;
+}
+
+.bento-span-3 {
+  grid-column: span 3;
+}
+
+.bento-span-4 {
+  grid-column: span 4;
+}
+
+.bento-span-full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1024px) {
+  .bento-grid,
+  .bento-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bento-span-3,
+  .bento-span-4 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-grid,
+  .bento-grid-4,
+  .bento-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-span-2,
+  .bento-span-3,
+  .bento-span-4,
+  .bento-span-full {
+    grid-column: span 1;
+  }
 }
 
 .btn-primary {
@@ -172,7 +285,7 @@ body {
   border-radius: 50px;
   padding: 12px 28px;
   cursor: pointer;
-  transition: var(--transition-base);
+  transition: var(--transition-smooth);
   box-shadow: var(--gold-glow);
   letter-spacing: 0.02em;
   font-size: 0.95rem;
@@ -212,7 +325,7 @@ body {
   border-radius: 50px;
   padding: 12px 28px;
   cursor: pointer;
-  transition: var(--transition-base);
+  transition: var(--transition-smooth);
   font-weight: 600;
 }
 
@@ -231,7 +344,7 @@ body {
   border-radius: 50px;
   padding: 12px 28px;
   cursor: pointer;
-  transition: var(--transition-base);
+  transition: var(--transition-smooth);
   font-weight: 600;
   backdrop-filter: var(--glass-blur);
 }
@@ -248,7 +361,7 @@ body {
   border-radius: 10px;
   padding: 8px;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: var(--transition-smooth);
   color: var(--text-secondary);
   display: flex;
   align-items: center;
@@ -265,7 +378,7 @@ body {
 .glass-input {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--glass-border);
-  border-radius: var(--glass-radius-sm);
+  border-radius: var(--radius-sm);
   color: var(--text-primary);
   padding: 14px 16px;
   width: 100%;
@@ -273,6 +386,25 @@ body {
   transition: var(--transition-base);
   backdrop-filter: blur(10px);
   outline: none;
+}
+
+.glass-surface-lift {
+  transition: var(--transition-smooth);
+}
+
+.glass-surface-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.fade-slide-in {
+  animation: fadeSlideIn 0.35s ease-out;
+}
+
+.glass-skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+  background-size: 220% 100%;
+  animation: shimmer 1.4s infinite;
 }
 
 .glass-input::placeholder {
@@ -293,6 +425,16 @@ body {
 .glass-input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.glass-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
 }
 
 .glass-navbar {
@@ -369,6 +511,19 @@ body {
   font-weight: 600;
   letter-spacing: 0.03em;
   backdrop-filter: blur(8px);
+}
+
+.badge-cashier {
+  background: rgba(234, 179, 8, 0.15);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  color: var(--color-warning);
+}
+
+.badge-client,
+.badge-manager {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: var(--info-text);
 }
 
 .badge-active {
@@ -473,7 +628,7 @@ body {
   background: rgba(13, 27, 62, 0.85);
   backdrop-filter: blur(40px);
   border: 1px solid var(--glass-border);
-  border-radius: var(--glass-radius-lg);
+  border-radius: var(--radius-xl);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   padding: 32px;
   width: 100%;
@@ -481,7 +636,8 @@ body {
   animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.glass-toast {
+.glass-toast,
+.glass-toast-container {
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -520,6 +676,22 @@ body {
   border-left-color: var(--warning-text);
 }
 
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes slideUp {
   from {
     transform: translateY(30px);
@@ -548,5 +720,52 @@ body {
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  .bento-item-small,
+  .bento-item-tall {
+    grid-column: span 6;
+  }
+
+  .bento-item-wide,
+  .bento-item-large {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-grid-system {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .bento-item,
+  .bento-item-small,
+  .bento-item-wide,
+  .bento-item-tall,
+  .bento-item-large {
+    grid-column: span 1;
+    min-height: auto;
   }
 }

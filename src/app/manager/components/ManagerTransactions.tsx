@@ -1,15 +1,26 @@
 "use client";
 
 import DashboardLayout from "@/components/DashboardLayout";
-import { mockTransactions, formatCurrency, getStatusBadgeClass } from "@/data/mockData";
+import { formatCurrency, getStatusBadgeClass } from "@/lib/format";
 import { ArrowDownRight, ArrowUpRight, ArrowRightLeft } from "lucide-react";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchTransactionsThunk } from "@/store/slices/bankingSlice";
+import GlassCard from "@/components/ui/GlassCard";
 
 const ManagerTransactions = () => {
+  const dispatch = useAppDispatch();
+  const { transactions } = useAppSelector((state) => state.banking);
+
+  useEffect(() => {
+    dispatch(fetchTransactionsThunk({ limit: 200 }));
+  }, [dispatch]);
+
   return (
     <DashboardLayout>
       <div className="space-y-4">
         <h1 className="text-2xl font-bold text-foreground">Transaction Monitoring</h1>
-        <div className="bento-card">
+        <GlassCard>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -23,7 +34,7 @@ const ManagerTransactions = () => {
                 </tr>
               </thead>
               <tbody>
-                {mockTransactions.map((t) => (
+                {transactions.map((t) => (
                   <tr key={t.id} className="border-b border-border last:border-0 hover:bg-secondary/50 transition-colors">
                     <td className="py-3 font-mono text-xs">{t.reference}</td>
                     <td className="py-3 text-muted-foreground text-xs">{new Date(t.createdAt).toLocaleString()}</td>
@@ -35,7 +46,7 @@ const ManagerTransactions = () => {
                         {t.type}
                       </div>
                     </td>
-                    <td className="py-3 font-medium">{formatCurrency(t.amount)}</td>
+                    <td className="py-3 font-medium">{formatCurrency(Number(t.amount))}</td>
                     <td className="py-3 text-muted-foreground text-xs max-w-[200px] truncate">{t.description}</td>
                     <td className="py-3"><span className={getStatusBadgeClass(t.status)}>{t.status}</span></td>
                   </tr>
@@ -43,7 +54,7 @@ const ManagerTransactions = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </GlassCard>
       </div>
     </DashboardLayout>
   );

@@ -2,18 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Landmark, Eye, EyeOff, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Landmark, Eye, EyeOff } from "lucide-react";
+import GlassCard from "@/components/ui/GlassCard";
+import GlassButton from "@/components/ui/GlassButton";
+import GlassInput from "@/components/ui/GlassInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
 import { AUTH_ROUTES } from "@/constants/routes";
-import { getDashboardRouteByRole, getStoredUserRole } from "@/services/auth.service";
+import { getDashboardRouteByRole } from "@/services/auth.service";
+import { useUiText } from "@/lib/ui-text";
 
 const Login = () => {
   const router = useRouter();
   const { login } = useAuth();
+  const { t } = useUiText();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -27,37 +29,36 @@ const Login = () => {
     const result = await login(email, password);
     setLoading(false);
     if (result.success) {
-      router.push(getDashboardRouteByRole(getStoredUserRole()));
+      const role = "role" in result ? result.role : null;
+      router.push(getDashboardRouteByRole((role as "client" | "cashier" | "manager" | null) ?? null));
     } else {
       setError(result.error || "Login failed");
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute w-72 h-72 bg-primary/10 rounded-full -top-20 -right-20 animate-float" />
-        <div className="absolute w-48 h-48 bg-primary/5 rounded-full bottom-20 left-10 animate-float-delayed" />
+        <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/10 animate-orb-float" />
+        <div className="absolute bottom-20 left-10 h-48 w-48 rounded-full bg-primary/5 animate-orb-float" />
       </div>
-      <div className="bento-card w-full max-w-md relative z-10">
+      <GlassCard className="fade-slide-in relative z-10 w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-3">
             <Landmark className="h-8 w-8 text-primary" />
             <span className="text-2xl font-bold text-foreground">BANKA</span>
           </div>
-          <p className="text-muted-foreground text-sm">Bank of Citizens</p>
+          <p className="text-muted-foreground text-sm">{t("brand.slogan", "Bank of Citizens")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@banka.rw" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-secondary border-border" />
+            <GlassInput id="email" type="email" label={t("auth.login.email", "Email Address")} placeholder="you@banka.rw" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
             <div className="relative">
-              <Input id="password" type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="bg-secondary border-border pr-10" />
+              <GlassInput id="password" type={showPassword ? "text" : "password"} label={t("auth.login.password", "Password")} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="pr-10" />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -67,33 +68,31 @@ const Login = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Checkbox id="remember" />
-              <Label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">Remember me</Label>
+              <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">{t("auth.login.remember", "Remember me")}</label>
             </div>
-            <button type="button" onClick={() => router.push(AUTH_ROUTES.forgotPassword)} className="text-sm text-primary hover:underline">Forgot Password?</button>
+            <button type="button" onClick={() => router.push(AUTH_ROUTES.forgotPassword)} className="text-sm text-primary hover:underline">{t("auth.login.forgot", "Forgot Password?")}</button>
           </div>
 
           {error && <p className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">{error}</p>}
 
-          <Button variant="hero" className="w-full" type="submit" disabled={loading}>
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
-          </Button>
+          <GlassButton className="w-full" type="submit" disabled={loading} loading={loading} loadingText={t("common.loading", "Loading...")}>{t("auth.login.submit", "Sign In")}</GlassButton>
         </form>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          Don't have an account?{" "}
-          <button onClick={() => router.push(AUTH_ROUTES.signup)} className="text-primary hover:underline font-medium">Sign Up</button>
+          {t("auth.login.signupPrompt", "Don't have an account?")} {" "}
+          <button onClick={() => router.push(AUTH_ROUTES.signup)} className="text-primary hover:underline font-medium">{t("auth.login.signup", "Sign Up")}</button>
         </p>
 
         {/* Quick login hint for demo */}
-        <div className="mt-6 p-3 rounded-lg bg-secondary/50 border border-border">
-          <p className="text-xs text-muted-foreground text-center mb-2 font-medium">Demo Accounts (any password):</p>
+        <div className="mt-6 rounded-lg border border-[var(--glass-border)] bg-[var(--glass-bg)] p-3">
+          <p className="mb-2 text-center text-xs font-medium text-muted-foreground">{t("auth.login.demoHint", "Demo Accounts (any password):")}</p>
           <div className="space-y-1 text-xs text-muted-foreground">
-            <p><span className="text-primary">Client:</span> jean.pierre@banka.rw</p>
-            <p><span className="text-primary">Cashier:</span> amina.uwase@banka.rw</p>
-            <p><span className="text-primary">Manager:</span> eric.nkurunziza@banka.rw</p>
+            <p><span className="text-primary">{t("auth.login.client", "Client")}:</span> jean.pierre@banka.rw</p>
+            <p><span className="text-primary">{t("auth.login.cashier", "Cashier")}:</span> amina.uwase@banka.rw</p>
+            <p><span className="text-primary">{t("auth.login.manager", "Manager")}:</span> eric.nkurunziza@banka.rw</p>
           </div>
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 };

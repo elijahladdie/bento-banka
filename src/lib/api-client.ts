@@ -25,7 +25,7 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-export const unwrapSuccess = <T>(payload: ApiSuccess<T>): T => payload.success.data;
+export const unwrapSuccess = <T>(payload: ApiSuccess<T>): T => payload.data;
 
 export const extractErrorMessage = (error: unknown, fallback = "Something went wrong") => {
   if (!(error instanceof AxiosError)) {
@@ -33,7 +33,7 @@ export const extractErrorMessage = (error: unknown, fallback = "Something went w
   }
 
   const responseData = error.response?.data as ApiError | undefined;
-  return responseData?.error?.message ?? fallback;
+  return responseData?.message ?? fallback;
 };
 
 export const authStorage = {

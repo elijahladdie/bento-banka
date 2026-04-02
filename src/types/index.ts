@@ -91,18 +91,16 @@ export type Pagination = {
 };
 
 export type ApiSuccess<T> = {
-	success: {
-		message: string;
-		data: T;
-		pagination?: Pagination;
-	};
+	success: boolean;
+	message: string;
+	data: T;
+	pagination?: Pagination;
 };
 
 export type ApiError = {
-	error: {
-		message: string;
-		errors?: Array<{ field: string; message: string }>;
-	};
+	success: boolean;
+	message: string;
+	errors?: Array<{ field: string; message: string }>;
 };
 
 export type LoginPayload = {

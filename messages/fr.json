@@ -1,0 +1,166 @@
+{
+  "brand": {
+    "name": "BANKA",
+    "slogan": "Banque des Citoyens"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "back": "Retour"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "accounts": "Comptes",
+    "transfer": "Transfert",
+    "clients": "Clients",
+    "transactions": "Transactions",
+    "notifications": "Notifications",
+    "profile": "Profil",
+    "users": "Utilisateurs",
+    "approvals": "Approbations",
+    "statistics": "Statistiques",
+    "signOut": "Déconnexion"
+  },
+  "layout": {
+    "profile": "Profil",
+    "bankOfCitizens": "Banque des Citoyens"
+  },
+  "landing": {
+    "heroTitle": "Banque des Citoyens",
+    "heroSubtitle": "Sécurisée. Simple. À vous.",
+    "openAccount": "Ouvrir un compte",
+    "signIn": "Se connecter",
+    "whyTitle": "Pourquoi BANKA ?",
+    "howTitle": "Comment ça marche",
+    "footerLine": "Banque des Citoyens — Sécurisée. Simple. À vous.",
+    "copyright": "© 2026 BANKA. Tous droits réservés.",
+    "features": {
+      "multiAccount": { "title": "Gestion multi-comptes", "desc": "Créez et gérez des comptes épargne, courants et à terme depuis un seul endroit." },
+      "transfers": { "title": "Transferts instantanés", "desc": "Transférez des fonds entre vos comptes instantanément et sans frais." },
+      "roles": { "title": "Sécurité basée sur les rôles", "desc": "Contrôle d'accès à trois niveaux : clients, caissiers et gestionnaires." },
+      "audit": { "title": "Traçabilité complète", "desc": "Chaque transaction est enregistrée avec horodatage et numéro de référence." },
+      "uptime": { "title": "Accès 24/7", "desc": "Accédez à votre tableau de bord bancaire à tout moment, partout, sur n'importe quel appareil." },
+      "encryption": { "title": "Chiffrement bancaire", "desc": "Vos données sont protégées par des protocoles de chiffrement conformes aux standards du secteur." }
+    },
+    "steps": {
+      "signUp": { "title": "Inscription", "desc": "Créez votre compte en quelques minutes avec des informations de base." },
+      "approved": { "title": "Validation", "desc": "Un gestionnaire examine et approuve votre compte." },
+      "accounts": { "title": "Créer des comptes", "desc": "Ouvrez des comptes épargne, courants ou à terme." },
+      "transact": { "title": "Opérations", "desc": "Déposez, retirez et transférez des fonds en toute sécurité." }
+    },
+    "stats": { "clients": "Clients", "transactions": "Transactions", "uptime": "Disponibilité", "roles": "Niveaux de rôle" }
+  },
+  "dashboard": {
+    "client": {
+      "greetingMorning": "Bonjour",
+      "greetingAfternoon": "Bon après-midi",
+      "greetingEvening": "Bonsoir",
+      "accounts": "comptes",
+      "editProfile": "Modifier le profil",
+      "totalBalance": "Solde total",
+      "acrossAccounts": "Sur",
+      "recentActivity": "Activité récente",
+      "viewAll": "Voir tout",
+      "noRecentTransactions": "Aucune transaction récente",
+      "myAccounts": "Mes comptes",
+      "new": "Nouveau",
+      "quickTransfer": "Transfert rapide",
+      "selectSource": "Sélectionner le compte source",
+      "destination": "Numéro de compte destinataire",
+      "amount": "Montant",
+      "transfer": "Transférer",
+      "notifications": "Notifications",
+      "noNotifications": "Aucune notification pour le moment"
+    },
+    "manager": {
+      "activeClients": "Clients actifs",
+      "totalAccounts": "Comptes totaux",
+      "transactionVolume": "Volume des transactions",
+      "pendingApprovals": "Approbations en attente",
+      "recentTransactions": "Transactions récentes",
+      "reference": "Référence",
+      "type": "Type",
+      "amount": "Montant",
+      "status": "Statut",
+      "noTransactions": "Aucune transaction",
+      "newClientRegistration": "Nouvelle inscription client",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "approveAccount": "Approuver le compte",
+      "noPendingApprovals": "Aucune approbation en attente",
+      "allUsers": "Tous les utilisateurs",
+      "user": "Utilisateur",
+      "email": "Email",
+      "role": "Rôle",
+      "joined": "Inscrit",
+      "noUsers": "Aucun utilisateur trouvé"
+    },
+    "cashier": {
+      "welcome": "Bienvenue",
+      "deposits": "Dépôts",
+      "withdrawals": "Retraits",
+      "volume": "Volume",
+      "searchClient": "Rechercher un client",
+      "searchPlaceholder": "Rechercher par nom, email ou numéro de compte...",
+      "noClientsFound": "Aucun client trouvé",
+      "deposit": "Dépôt",
+      "withdraw": "Retrait",
+      "recentOperations": "Opérations récentes",
+      "reference": "Référence",
+      "type": "Type",
+      "amount": "Montant",
+      "status": "Statut",
+      "date": "Date",
+      "noOperations": "Aucune opération pour le moment"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Bon retour",
+      "subtitle": "Connectez-vous à votre compte",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "remember": "Se souvenir de moi",
+      "forgot": "Mot de passe oublié ?",
+      "submit": "Se connecter",
+      "signupPrompt": "Vous n'avez pas de compte ?",
+      "signup": "S'inscrire",
+      "demoHint": "Comptes de démo (n'importe quel mot de passe) :",
+      "client": "Client",
+      "cashier": "Caissier",
+      "manager": "Gestionnaire"
+    },
+    "signup": {
+      "title": "Créer votre compte",
+      "successTitle": "Compte créé !",
+      "successBody": "Votre compte attend l'approbation d'un gestionnaire. Vous serez notifié par e-mail.",
+      "redirecting": "Redirection vers la connexion...",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "E-mail",
+      "phone": "Numéro de téléphone",
+      "nationalId": "ID national",
+      "dob": "Date de naissance",
+      "address": "Adresse",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "terms": "J'accepte les conditions générales",
+      "submit": "Créer le compte",
+      "loginPrompt": "Vous avez déjà un compte ?",
+      "login": "Se connecter"
+    },
+    "forgot": {
+      "title": "Réinitialiser le mot de passe",
+      "success": "Consultez votre e-mail pour les instructions de réinitialisation.",
+      "email": "E-mail",
+      "submit": "Envoyer le lien",
+      "sending": "Envoi...",
+      "back": "Retour à la connexion"
+    }
+  },
+  "errors": {
+    "invalidCredentials": "Identifiants invalides"
+  }
+}

@@ -1,14 +1,25 @@
 "use client";
 
 import DashboardLayout from "@/components/DashboardLayout";
-import { mockAccounts, formatCurrency, getStatusBadgeClass } from "@/data/mockData";
+import { formatCurrency, getStatusBadgeClass } from "@/lib/format";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchAccountsThunk } from "@/store/slices/bankingSlice";
+import GlassCard from "@/components/ui/GlassCard";
 
 const ManagerAccounts = () => {
+  const dispatch = useAppDispatch();
+  const { accounts } = useAppSelector((state) => state.banking);
+
+  useEffect(() => {
+    dispatch(fetchAccountsThunk({ limit: 200 }));
+  }, [dispatch]);
+
   return (
     <DashboardLayout>
       <div className="space-y-4">
         <h1 className="text-2xl font-bold text-foreground">Account Management</h1>
-        <div className="bento-card">
+        <GlassCard>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -22,12 +33,12 @@ const ManagerAccounts = () => {
                 </tr>
               </thead>
               <tbody>
-                {mockAccounts.map((a) => (
+                {accounts.map((a) => (
                   <tr key={a.id} className="border-b border-border last:border-0 hover:bg-secondary/50 transition-colors">
                     <td className="py-3 font-mono text-xs">{a.accountNumber}</td>
-                    <td className="py-3 text-foreground">{a.owner.firstName} {a.owner.lastName}</td>
+                    <td className="py-3 text-foreground">{a.owner?.firstName} {a.owner?.lastName}</td>
                     <td className="py-3 capitalize">{a.type}</td>
-                    <td className="py-3 font-medium text-primary">{formatCurrency(a.balance)}</td>
+                    <td className="py-3 font-medium text-primary">{formatCurrency(Number(a.balance))}</td>
                     <td className="py-3"><span className={getStatusBadgeClass(a.status)}>{a.status}</span></td>
                     <td className="py-3 text-muted-foreground text-xs">{new Date(a.createdAt).toLocaleDateString()}</td>
                   </tr>
@@ -35,7 +46,7 @@ const ManagerAccounts = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </GlassCard>
       </div>
     </DashboardLayout>
   );
