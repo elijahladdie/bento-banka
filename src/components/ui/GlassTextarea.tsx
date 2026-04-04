@@ -3,11 +3,10 @@ import { cn } from "@/lib/utils";
 
 interface GlassTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
-  error?: string;
   hint?: string;
 }
 
-const GlassTextarea = forwardRef<HTMLTextAreaElement, GlassTextareaProps>(({ label, error, hint, className, id, ...props }, ref) => {
+const GlassTextarea = forwardRef<HTMLTextAreaElement, GlassTextareaProps>(({ label, hint, className, id, ...props }, ref) => {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}>
       {label ? (
@@ -18,13 +17,11 @@ const GlassTextarea = forwardRef<HTMLTextAreaElement, GlassTextareaProps>(({ lab
       <textarea
         ref={ref}
         id={id}
-        className={cn("glass-input", error && "error", className)}
+        className={cn("glass-input", className)}
         style={{ resize: "vertical", minHeight: "100px" }}
         {...props}
       />
-      {error ? (
-        <span style={{ fontSize: "0.75rem", color: "var(--error-text)", marginTop: 4 }}>{error}</span>
-      ) : hint ? (
+      {hint ? (
         <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: 4 }}>{hint}</span>
       ) : null}
     </div>

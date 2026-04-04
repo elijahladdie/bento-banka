@@ -11,7 +11,7 @@ type RoleGuardProps = {
 
 export default function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
   const router = useRouter();
-  const { isAuthenticated, role } = useAuth();
+  const { isAuthenticated, role, initialized } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || !initialized) return;
 
     if (!isAuthenticated) {
       router.replace("/login");
@@ -29,10 +29,10 @@ export default function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
     if (allowedRoles && role && !allowedRoles.includes(role)) {
       router.replace("/login");
     }
-  }, [allowedRoles, isAuthenticated, role, router, isMounted]);
+  }, [allowedRoles, initialized, isAuthenticated, role, router, isMounted]);
 
   // During SSR/build, show nothing (it's a protected route anyway)
-  if (!isMounted) {
+  if (!isMounted || !initialized) {
     return null;
   }
 

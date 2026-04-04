@@ -1,11 +1,12 @@
 "use client";
 
+import type { ReactNode } from "react";
 import GlassButton from "./GlassButton";
 
 interface ConfirmModalProps {
   isOpen: boolean;
   title: string;
-  message: string;
+  message: ReactNode;
   confirmLabel?: string;
   cancelLabel?: string;
   onConfirm: () => void;
@@ -33,7 +34,7 @@ export default function ConfirmModal({
         <h3 id="confirm-modal-title" className="mb-3 text-xl font-bold text-[var(--text-primary)]">
           {title}
         </h3>
-        <p className="mb-7 leading-relaxed text-[var(--text-secondary)]">{message}</p>
+        <div className="mb-7 leading-relaxed text-[var(--text-secondary)]">{message}</div>
         <div className="flex justify-end gap-3">
           <GlassButton variant="secondary" onClick={onCancel} disabled={loading}>
             {cancelLabel}
