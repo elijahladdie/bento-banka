@@ -9,6 +9,6 @@ const nextConfig = {
     FRONTEND_STATE: process.env.FRONTEND_STATE,
   },
 };
-console.log(nextConfig)
+
 
 export default withNextIntl(nextConfig);
