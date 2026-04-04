@@ -26,10 +26,9 @@ if (!mockInstalled && isSandboxMode && typeof window !== "undefined") {
   mockInstalled = true;
 }
 
-// Note: token interceptor kept but mock-api interceptor will short-circuit before network
 
 export const unwrapSuccess = <T>(payload: any): T => {
-  // Handle both { data: T } and direct T formats from mock
+
   if (payload && typeof payload === "object" && "data" in payload) {
     return payload.data as T;
   }
@@ -37,10 +36,9 @@ export const unwrapSuccess = <T>(payload: any): T => {
 };
 
 export const extractErrorMessage = (error: unknown, fallback = "Something went wrong") => {
-  console.log(error, "Error object");
+
   if (error && typeof error === "object" && "response" in error) {
     const responseData = (error as any).response?.data;
-    console.log("API Error Response Data:", responseData);
     return responseData?.message ?? responseData?.error ?? fallback;
   }
   if(error && typeof error === "object" && "message" in error) {
