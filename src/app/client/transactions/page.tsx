@@ -1,12 +1,12 @@
 import RoleGuard from "@/components/RoleGuard";
-import ClientTransactionsWorkspace from "@/app/client/components/ClientTransactionsWorkspace";
+import ClientTransactions from "@/app/client/components/ClientTransactions";
 
 export const dynamic = 'force-dynamic';
 
 export default function ClientTransferPage() {
   return (
     <RoleGuard allowedRoles={["client"]}>
-      <ClientTransactionsWorkspace />
+      <ClientTransactions />
     </RoleGuard>
   );
 }

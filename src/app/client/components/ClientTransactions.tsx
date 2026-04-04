@@ -43,7 +43,7 @@ interface FilterState {
 
 type DestinationMode = "own" | "other";
 
-const ClientTransactionsWorkspace = () => {
+const ClientTransactions = () => {
   const { user } = useAuth();
   const dispatch = useAppDispatch();
   const { showToast } = useToast();
@@ -1068,4 +1068,4 @@ useEffect(() => {
   );
 };
 
-export default ClientTransactionsWorkspace;
+export default ClientTransactions;
