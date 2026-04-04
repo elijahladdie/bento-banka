@@ -1,14 +1,15 @@
 "use client";
 
-import DashboardLayout from "@/components/DashboardLayout";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 import { formatCurrency, getStatusBadgeClass } from "@/lib/format";
 import { Search, ArrowDownRight, ArrowUpRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchAccountsThunk, fetchUsersThunk } from "@/store/slices/bankingSlice";
 import GlassCard from "@/components/ui/GlassCard";
 import GlassInput from "@/components/ui/GlassInput";
 import GlassButton from "@/components/ui/GlassButton";
+import PaginationBar from "@/components/ui/PaginationBar";
 import { useUiText } from "@/lib/ui-text";
 
 const CashierClients = () => {
@@ -16,6 +17,8 @@ const CashierClients = () => {
   const { users, accounts } = useAppSelector((state) => state.banking);
   const { t } = useUiText();
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6;
 
   useEffect(() => {
     dispatch(fetchUsersThunk({ role: "client", limit: 100 }));
@@ -28,18 +31,33 @@ const CashierClients = () => {
     return isClient && match;
   });
 
+  const totalPages = Math.ceil(clients.length / pageSize);
+  const paginatedClients = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return clients.slice(start, start + pageSize);
+  }, [clients, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
+
   return (
     <DashboardLayout>
       <div className="space-y-4">
         <h1 className="text-2xl font-bold text-foreground">{t("nav.clients", "Search Clients")}</h1>
         <GlassCard>
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <GlassInput placeholder="Search by name or email..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+          <div className="mb-4">
+            <GlassInput
+              placeholder="Search by name or email..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              icon={<Search className="h-5 w-5 text-muted-foreground" />}
+              iconPosition="left"
+            />
           </div>
           {search && (
             <div className="bento-grid">
-              {clients.map((c) => {
+              {paginatedClients.map((c) => {
                 const accs = accounts.filter((a) => a.ownerId === c.id);
                 return (
                   <div key={c.id} className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-bg)] p-4">
@@ -73,6 +91,15 @@ const CashierClients = () => {
               })}
               {clients.length === 0 && <p className="text-sm text-muted-foreground col-span-full text-center py-4">No clients found</p>}
             </div>
+          )}
+          {search && (
+            <PaginationBar
+              currentPage={currentPage}
+              totalPages={totalPages}
+              total={clients.length}
+              limit={pageSize}
+              onPageChange={setCurrentPage}
+            />
           )}
         </GlassCard>
       </div>
