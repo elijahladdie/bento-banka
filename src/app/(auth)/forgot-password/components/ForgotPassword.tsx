@@ -9,25 +9,27 @@ import { useState } from "react";
 import { apiClient, extractErrorMessage } from "@/lib/api-client";
 import type { ApiSuccess } from "@/types";
 import { useUiText } from "@/lib/ui-text";
+import { useToast } from "@/hooks/useToast";
 
 const ForgotPassword = () => {
   const router = useRouter();
   const { t } = useUiText();
   const [sent, setSent] = useState(false);
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
       await apiClient.post<ApiSuccess<unknown>>("/auth/forgot-password", { email });
+      showToast("success", t("auth.forgot.success", "Reset instructions sent"), t("auth.forgot.checkEmail", "Check your email for reset instructions."));
       setSent(true);
     } catch (error) {
-      setError(extractErrorMessage(error, "Failed to send reset instructions"));
+      const errorMsg = extractErrorMessage(error, t("auth.forgot.failed", "Failed to send reset instructions"));
+      showToast("error", t("auth.forgot.failed", "Failed to send reset instructions"), errorMsg);
     } finally {
       setLoading(false);
     }
@@ -53,7 +55,6 @@ const ForgotPassword = () => {
             <div className="space-y-2">
               <GlassInput type="email" label={t("auth.forgot.email", "Email")} placeholder="you@banka.rw" required value={email} onChange={(event) => setEmail(event.target.value)} />
             </div>
-            {error && <p className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">{error}</p>}
             <GlassButton className="w-full" type="submit" disabled={loading} loading={loading} loadingText={t("auth.forgot.sending", "Sending...")}>{t("auth.forgot.submit", "Send Reset Link")}</GlassButton>
             <button type="button" onClick={() => router.push("/login")} className="block w-full text-center text-sm text-muted-foreground hover:text-primary">
               {t("auth.forgot.back", "Back to Login")}

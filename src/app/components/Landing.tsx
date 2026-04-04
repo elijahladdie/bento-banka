@@ -8,6 +8,7 @@ import GlassButton from "@/components/ui/GlassButton";
 import GlassCard from "@/components/ui/GlassCard";
 import AmbientBackground from "@/components/ui/AmbientBackground";
 import { useUiText } from "@/lib/ui-text";
+import Footer from "@/components/layout/Footer";
 
 const features = [
   { icon: Users, titleKey: "landing.features.multiAccount.title", descKey: "landing.features.multiAccount.desc" },
@@ -25,17 +26,20 @@ const stats = [
   { value: 3, labelKey: "landing.stats.roles", suffix: "" },
 ];
 
+
 const StatCard = ({ value, label, suffix }: { value: number; label: string; suffix: string }) => {
   const { count, ref } = useCountUp(value);
 
   return (
     <div ref={ref}>
-      <GlassCard className="text-center">
-        <div className="stat-value">
+      <GlassCard className="p-4 text-center">
+        <div className="text-xl font-bold text-foreground">
           {value === 99.9 ? "99.9" : count.toLocaleString()}
           {suffix}
         </div>
-        <p className="text-muted-foreground mt-2 font-medium">{label}</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          {label}
+        </p>
       </GlassCard>
     </div>
   );
@@ -86,7 +90,7 @@ const Landing = () => {
               {t("landing.heroSubtitle", "Secure. Simple. Yours.")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <GlassButton className="px-8 text-base" onClick={() => router.push(AUTH_ROUTES.signup)}>
+              <GlassButton className="px-8 text-base flex flex-row" onClick={() => router.push(AUTH_ROUTES.signup)}>
                 {t("landing.openAccount", "Open an Account")} <ArrowRight className="ml-1 h-5 w-5" />
               </GlassButton>
               <GlassButton variant="secondary" className="px-8 text-base" onClick={() => router.push(AUTH_ROUTES.login)}>
@@ -116,55 +120,77 @@ const Landing = () => {
           </div>
         </div>
       </section>
-
       {/* Stats */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
-          <div className="bento-grid-4">
+
+          {/* Title */}
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-semibold text-foreground">
+              {t("landing.statsTitle", "Platform Stats")}
+            </h2>
+            <p className="text-sm text-muted-foreground mt-2">
+              {t("landing.statsSubtitle", "Trusted performance at scale")}
+            </p>
+          </div>
+
+          {/* Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {stats.map((s) => (
-              <StatCard key={s.labelKey} value={s.value} label={t(s.labelKey)} suffix={s.suffix} />
+              <StatCard
+                key={s.labelKey}
+                value={s.value}
+                label={t(s.labelKey)}
+                suffix={s.suffix}
+              />
             ))}
           </div>
+
         </div>
       </section>
 
       {/* How It Works */}
+      {/* How It Works */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center text-foreground mb-12">
-            {t("landing.howTitle", "How It Works")}
-          </h2>
-          <div className="bento-grid-4">
+
+          {/* Title */}
+          <div className="text-center mb-12 max-w-xl mx-auto">
+            <h2 className="text-3xl font-bold text-foreground">
+              {t("landing.howTitle")}
+            </h2>
+            <p className="text-sm text-muted-foreground mt-3">
+              {t("landing.howSubtitle", "Start banking in minutes with a simple process")}
+            </p>
+          </div>
+
+          {/* Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {steps.map((s) => (
-              <GlassCard key={s.step} className="text-center relative">
-                <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-4 font-bold text-lg">
-                  {s.step}
+              <GlassCard
+                key={s.step}
+                className="p-6 flex flex-col gap-4 hover:scale-[1.02] transition-all duration-300"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm">
+                    {s.step}
+                  </div>
+                  <h3 className="text-base font-semibold text-foreground">
+                    {t(s.titleKey)}
+                  </h3>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">{t(s.titleKey)}</h3>
-                <p className="text-muted-foreground text-sm">{t(s.descKey)}</p>
+
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t(s.descKey)}
+                </p>
               </GlassCard>
             ))}
           </div>
+
         </div>
       </section>
-
       {/* Footer */}
-      <footer className="py-12 px-4 border-t border-border">
-        <div className="container mx-auto">
-          <GlassCard className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <Landmark className="h-6 w-6 text-primary" />
-              <span className="text-lg font-bold text-foreground">BANKA</span>
-            </div>
-            <p className="text-muted-foreground text-sm mb-4">{t("landing.footerLine", "Bank of Citizens — Secure. Simple. Yours.")}</p>
-            <div className="flex justify-center gap-6 text-sm text-muted-foreground">
-              <button onClick={() => router.push(AUTH_ROUTES.login)} className="hover:text-primary transition-colors">{t("landing.signIn", "Sign In")}</button>
-              <button onClick={() => router.push(AUTH_ROUTES.signup)} className="hover:text-primary transition-colors">{t("landing.openAccount", "Open an Account")}</button>
-            </div>
-            <p className="text-xs text-muted-foreground mt-6">{t("landing.copyright", "© 2026 BANKA. All rights reserved.")}</p>
-          </GlassCard>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

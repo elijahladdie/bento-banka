@@ -48,6 +48,11 @@ export type Account = {
 		lastName?: string | null;
 		email: string;
 		nationalId?: string;
+		userRoles?: Array<{
+			role?: {
+				slug?: string;
+			};
+		}>;
 	};
 };
 
@@ -60,6 +65,7 @@ export type Transaction = {
 	amount: number;
 	reference: string;
 	status: TransactionStatus;
+	confirmationToken?: string | null;
 	description: string;
 	balanceBefore: number;
 	balanceAfter: number;
@@ -76,8 +82,8 @@ export type Notification = {
 	message: string;
 	isRead: boolean;
 	readAt: string | null;
-	receiverId: string;
-	senderId: string | null;
+	userId: string;
+	direction: "SENT" | "RECEIVED";
 	createdAt: string;
 };
 
