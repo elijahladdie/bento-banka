@@ -12,7 +12,7 @@ import { changePasswordThunk, fetchMeThunk, updateProfileThunk } from "@/store/s
 import type { AppDispatch, RootState } from "@/store";
 import { useToast } from "@/hooks/useToast";
 
-export default function UnifiedProfileWorkspace() {
+export default function UnifiedProfile() {
   const dispatch = useDispatch<AppDispatch>();
   const { t } = useUiText();
   const { user, loading, error } = useSelector((state: RootState) => state.auth);
