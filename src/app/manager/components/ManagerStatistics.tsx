@@ -1,6 +1,6 @@
 "use client";
 
-import DashboardLayout from "@/components/DashboardLayout";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 import { formatCurrency } from "@/lib/format";
 import { BarChart3, TrendingUp, PieChart } from "lucide-react";
 import { useEffect } from "react";
@@ -36,7 +36,6 @@ const ManagerStatistics = () => {
   const roleCount = (role: string) =>
     statsUsers.find((item) => item.role === role)?.count ??
     users.filter((user) => user.userRoles?.[0]?.role?.slug === role).length;
-
   const clientCount = roleCount("client");
   const cashierCount = roleCount("cashier");
   const managerCount = roleCount("manager");
@@ -54,7 +53,7 @@ const ManagerStatistics = () => {
               <h3 className="font-semibold text-foreground">Deposits</h3>
             </div>
             <p className="text-2xl font-bold text-emerald-400">{formatCurrency(totalDeposits)}</p>
-            <p className="text-xs text-muted-foreground mt-1">{statsTransactions.find((item) => item.type === "deposit")?._count.id ?? transactions.filter((t) => t.type === "deposit").length} transactions</p>
+            <p className="text-xs text-muted-foreground mt-1">{statsTransactions.find((item) => item.type === "deposit")?._count?.id ?? transactions.filter((t) => t.type === "deposit").length} transactions</p>
             <div className="mt-3 h-2 rounded-full bg-secondary overflow-hidden">
               <div className="h-full bg-emerald-400 rounded-full" style={{ width: "75%" }} />
             </div>
@@ -65,7 +64,7 @@ const ManagerStatistics = () => {
               <h3 className="font-semibold text-foreground">Withdrawals</h3>
             </div>
             <p className="text-2xl font-bold text-destructive">{formatCurrency(totalWithdrawals)}</p>
-            <p className="text-xs text-muted-foreground mt-1">{statsTransactions.find((item) => item.type === "withdraw")?._count.id ?? transactions.filter((t) => t.type === "withdraw").length} transactions</p>
+            <p className="text-xs text-muted-foreground mt-1">{statsTransactions.find((item) => item.type === "withdraw")?._count?.id ?? transactions.filter((t) => t.type === "withdraw").length} transactions</p>
             <div className="mt-3 h-2 rounded-full bg-secondary overflow-hidden">
               <div className="h-full bg-destructive rounded-full" style={{ width: "40%" }} />
             </div>
