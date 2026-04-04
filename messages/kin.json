@@ -8,7 +8,8 @@
     "cancel": "Kureka",
     "confirm": "Emeza",
     "save": "Bika",
-    "back": "Subira inyuma"
+    "back": "Subira inyuma",
+    "itemsPerPage": "Ibintu kuri paji"
   },
   "nav": {
     "dashboard": "Ikibaho nyamukuru",
@@ -71,6 +72,7 @@
       "destination": "Nimero ya konti yoherezwaho",
       "amount": "Umubare",
       "transfer": "Ohereza",
+      "description": "Ibisobanuro",
       "notifications": "Amatangazo",
       "noNotifications": "Nta matangazo ahari ubu"
     },
@@ -160,7 +162,275 @@
       "back": "Subira ku kwinjira"
     }
   },
+  "profile": {
+    "title": "Umwirondoro",
+    "personalInfo": "Amakuru y'Umusaraba",
+    "fullName": "Izina Ryose",
+    "phone": "Terefone",
+    "email": "Imeyili",
+    "nationalId": "Indangamuntu y'Igihugu",
+    "saveChanges": "Kubika Impinduka",
+    "changePassword": "Hinduza Ijambo Ryibanga",
+    "currentPassword": "Ijambo Ryibanga Rihari",
+    "newPassword": "Ijambo Ryibanga Nshya",
+    "confirmNewPassword": "Kwemeza Ijambo Ryibanga Nshya",
+    "updatePassword": "Hindura Ijambo Ryibanga",
+    "changePhoto": "Hinduza Ifoto",
+    "memberSince": "Muhuza kuva"
+  },
   "errors": {
     "invalidCredentials": "Amakuru winjije siyo"
+  },
+  "notifications": {
+    "title": "Ubutumwa",
+    "unread": "butasomwe",
+    "markAllRead": "Sima Byose ko Warasomye",
+    "empty": "Nta butumwa buhari",
+    "viewAll": "Reba ubutumwa bwose",
+    "allCaughtUp": "Wasomye ubutumwa bwose",
+    "loadMore": "Shyira ibindi",
+    "ACCOUNT_APPROVED": "Konti Yemejwe",
+    "ACCOUNT_REJECTED": "Konti Yananiwe",
+    "ACCOUNT_FROZEN": "Konti Yarafunzwe",
+    "ACCOUNT_DORMANT": "Konti Isinziritse",
+    "ACCOUNT_CLOSED": "Konti Yafunzwe",
+    "DEPOSIT_RECEIVED": "Amafaranga Yaguye",
+    "WITHDRAWAL_CODE_SENT": "Kode yo kubikuza yoherejwe",
+    "WITHDRAWAL_PROCESSED": "Amafaranga Yakuwe",
+    "TRANSFER_SENT": "Amafaranga Yoherejwe",
+    "TRANSFER_RECEIVED": "Amafaranga Yabonywe",
+    "PASSWORD_CHANGED": "Ijambo Ryibanga Ryahinduwe",
+    "PROFILE_UPDATED": "Umwirondoro Wahindutse",
+    "USER_ACTIVATED": "Konti Yafunguwe",
+    "USER_DEACTIVATED": "Konti Yafunzwe",
+    "BANK_ACCOUNT_CREATED": "Konti ya Banki Yafunguwe",
+    "WELCOME": "Murakaza muri BANKA"
+  },
+  "manager": {
+    "users": {
+      "create": {
+        "open": "Kurema umukoresha",
+        "drawerTitle": "Kurema konti y'umukoresha",
+        "drawerDescription": "Ongeraho umukoresha mushya kandi umuhe uruhare muri porogaramu.",
+        "firstName": "Izina rya mbere",
+        "lastName": "Izina rya nyuma",
+        "email": "Imeyili",
+        "phone": "Nimero ya telefone",
+        "nationalId": "Indangamuntu",
+        "age": "Imyaka",
+        "password": "Ijambo banga",
+        "profilePicture": "URL y'ifoto y'umwirondoro",
+        "profilePictureUpload": "Ohereza ifoto y'umwirondoro",
+        "profilePictureHint": "Ifoto gusa, ntigomba kurenga 2MB",
+        "profilePicturePreviewAlt": "Igaragaza ry'ifoto y'umwirondoro",
+        "role": "Uruhare",
+        "rolePlaceholder": "Hitamo uruhare",
+        "roles": {
+          "client": "Umukiliya",
+          "cashier": "Ukoresha amafaranga",
+          "manager": "Umuyobozi"
+        },
+        "submit": "Kurema konti",
+        "success": "Konti y'umukoresha yakozwe neza",
+        "error": "Ntibyakunze kurema konti y'umukoresha",
+        "validation": {
+          "required": "Uzuza imirimo yose isabwa",
+          "age": "Imyaka igomba kuba nibura 18"
+        }
+      },
+      "search": "Shakisha abakoresha...",
+      "filter": {
+        "all": "Inzego zose",
+        "client": "Abakiliya",
+        "cashier": "Abakozi b'amafaranga",
+        "manager": "Abayobozi"
+      },
+      "table": {
+        "user": "Umukoresha",
+        "email": "Imeyili",
+        "role": "Uruhare",
+        "status": "Imimerere",
+        "joined": "Yinjiye",
+        "actions": "Ibikorwa",
+        "avatarAlt": "Ifoto y'umukoresha"
+      },
+      "status": {
+        "active": "Arakora",
+        "inactive": "Ntarakora",
+        "suspended": "Yahagaritswe",
+        "pendingApproval": "Ategereje kwemezwa"
+      },
+      "actions": {
+        "view": "Reba amakuru y'umukoresha"
+      },
+      "drawer": {
+        "title": "Ibisobanuro by'umukoresha",
+        "empty": "Nta mukoresha watoranyijwe",
+        "noPhone": "Nta nimero ya telefone",
+        "id": "ID y'umukoresha",
+        "nationalId": "Indangamuntu",
+        "age": "Imyaka",
+        "role": "Uruhare",
+        "status": "Imimerere",
+        "joined": "Yinjiye",
+        "statusTitle": "Hindura imimerere y'umukoresha",
+        "nextStatus": "Imimerere nshya",
+        "nextStatusPlaceholder": "Hitamo imimerere",
+        "reason": "Impamvu (si ngombwa)",
+        "updateStatus": "Hindura imimerere",
+        "statusSuccess": "Imimerere y'umukoresha yahinduwe neza",
+        "statusError": "Ntibyakunze guhindura imimerere y'umukoresha",
+        "noSelection": "Nyamuneka hitamo umukoresha"
+      },
+      "empty": "Nta bakoresha babonetse"
+    }
+  },
+  "accountForm": {
+    "title": "Fungura Konti ya Banki",
+    "subtitle": "Hitamo ubwoko bwa konti ushaka gufungura.",
+    "fields": {
+      "type": "Ubwoko bwa Konti",
+      "typePlaceholder": "Hitamo ubwoko bwa konti"
+    },
+    "types": {
+      "saving": "Kuzigama",
+      "fixed": "Konti y'igihe ntarengwa"
+    },
+    "actions": {
+      "open": "Fungura Konti ya Banki",
+      "submit": "Fungura Konti ya Banki",
+      "creating": "Birimo gukorwa..."
+    },
+    "success": {
+      "created": "Gusaba gufungura konti byakiriwe"
+    },
+    "errors": {
+      "typeRequired": "Nyamuneka hitamo ubwoko bwa konti",
+      "createFailed": "Ntibyakunze gufungura konti"
+    }
+  },
+  "notificationsPage": {
+    "title": "Amatangazo",
+    "subtitle": "Kurikirana amakuru yose n'ibyabaye kuri konti yawe ahantu hamwe.",
+    "loading": "Amatangazo arimo gutegurwa...",
+    "emptyTitle": "Nta matangazo ahari",
+    "emptyDescription": "Iyo hari igikorwa kuri konti yawe, kizagaragara hano.",
+    "filters": {
+      "all": "Yose",
+      "read": "Yasomwe",
+      "unread": "Atarasomwa",
+      "sent": "Yoherejwe",
+      "received": "Yakiriwe"
+    },
+    "actions": {
+      "refresh": "Ongera ushyireho",
+      "view": "Reba",
+      "hideDetails": "Hisha ibisobanuro",
+      "markRead": "Shyiraho ko byasomwe",
+      "markUnread": "Shyiraho ko bitarasomwa",
+      "markAllRead": "Shyira byose ko byasomwe"
+    },
+    "badges": {
+      "read": "Byasomwe",
+      "unread": "Bitarasomwa",
+      "sent": "Byoherejwe",
+      "received": "Byakiriwe"
+    },
+    "details": {
+      "title": "Ibisobanuro by'itangazo",
+      "id": "ID",
+      "noMetadata": "Nta yandi makuru ahari"
+    },
+    "success": {
+      "markAllRead": "Amatangazo yose yashyizweho ko yasomwe"
+    },
+    "errors": {
+      "markRead": "Ntibyakunze gushyiraho ko ryasomwe",
+      "markUnread": "Ntibyakunze gushyiraho ko ritarasomwa",
+      "markAllRead": "Ntibyakunze gushyiraho ko yose yasomwe"
+    }
+  },
+  "filters": {
+    "allTypes": "Ubwoko bwose",
+    "allStatus": "Imimerere yose",
+    "title": "Inyandiko",
+    "type": "Gukemurira ubwoko",
+    "status": "Gukemurira imimerere",
+    "dateFrom": "Kuva",
+    "dateTo": "Kugera",
+    "clear": "Gusiba inyandiko"
+  },
+  "transaction": {
+    "status": {
+      "pending": "Itegereje",
+      "completed": "Yirangiye",
+      "failed": "Ntiyakozwe"
+    }
+  },
+  "cashier": {
+    "withdrawalCodeSent": "Gusaba kubikuza byoherejwe. Umukiliya ni we ugomba kubyemeza akoresheje kode ye y'imibare 4.",
+    "withdrawalHint": "Kode y'imibare 4 izoherezwa mu buryo bw'imbere mu porogaramu ku nyir'ikonti.",
+    "requestWithdrawal": "Saba kubikuza",
+    "confirmWithdrawalCode": "Andika kode yo kubikuza",
+    "confirmWithdrawal": "Emeza kubikuza",
+    "confirmationCode": "kode y'imibare 4",
+    "confirmationPlaceholder": "1234",
+    "withdrawalFailed": "Kubikuza ntibyakunze",
+    "withdrawalConfirmed": "Kubikuza byarangiye neza",
+    "withdrawalConfirmationFailed": "Ntibyakunze kwemeza kubikuza",
+    "descriptionRequired": "Ibisobanuro by'ibikorwa ni ngombwa",
+    "insufficient": "Amafaranga arimo kutesheka mu kubikuza",
+    "depositSuccess": "Kubitsa byakozwe neza",
+    "withdrawalSuccess": "Kubikuza byakozwe neza",
+    "depositFailed": "Kubitsa ntibyakunze",
+    "transactionActions": "Hitamo ubwoko bw'ibikorwa",
+    "confirmDeposit": "Emeza kubitsa",
+    "confirmWithdraw": "Emeza kubikuza",
+    "processDeposit": "Kora kubitsa",
+    "processWithdraw": "Kora kubikuza",
+    "withdrawForm": "Foromo y'ubikuza"
+  },
+  "client": {
+    "transactions": {
+      "withdraw": "Kubikuza",
+      "withdrawForm": "Gusaba kubikuza",
+      "selectSourcePlaceholder": "Hitamo konti itangirwaho",
+      "descriptionPlaceholder": "Andika impamvu yo kubikuza",
+      "withdrawHint": "Reba ku butumwa bwawe kugira ngo ubone kode y'imibare 4 nyuma yo kohereza.",
+      "requestWithdrawal": "Saba kubikuza",
+      "confirmWithdrawal": "Emeza kubikuza",
+      "confirmationCode": "kode y'imibare 4",
+      "confirmationPlaceholder": "1234",
+      "account": "Konti",
+      "withdrawalCodeSent": "Reba ku butumwa bwawe kugira ngo ubone kode y'imibare 4 yo kwemeza kubikuza",
+      "withdrawalSuccess": "Kubikuza byarangiye neza",
+      "withdrawalFailed": "Kubikuza ntibyakunze",
+      "withdrawalConfirmationFailed": "Ntibyakunze kwemeza kubikuza",
+      "new": "Kora ibikorwa",
+      "amountRequired": "Umubare ugomba kuba munini kuriyo",
+      "minAmount": "Umubare mwinshi w'ibikorwa ni 100 RWF",
+      "descriptionRequired": "Ibisobanuro by'ibikorwa ni ngombwa",
+      "destinationTypeRequired": "Nyamuneka hitamo niba ikonti yoherezwaho ni yawe cyangwa ya batindi",
+      "selectBothAccounts": "Nyamuneka hitamo konti itangirwaho n'iyo yoherezwaho",
+      "insufficientBalance": "Amafaranga arimo kutesheka",
+      "transferSuccess": "Kohereza byakozwe neza",
+      "operationFailed": "Ibikorwa ntibyakozwe neza",
+      "noPendingWithdrawal": "Nta bikuza bitegereje byahitanywe",
+      "confirm": "Emeza kubikuza",
+      "view": "Reba",
+      "destinationType": "Ubwoko bw'aho bwangikirwa",
+      "destinationOwn": "Konti yanjye",
+      "destinationOther": "Konti y'umuntu mwindi",
+      "noResults": "Nta konti zikiniriwe zibonetse",
+      "selectedDestination": "Aho bwangikirwa bahabwa",
+      "amount": "Umubare",
+      "continue": "Komeza",
+      "confirmTransaction": "Emeza ibikorwa",
+      "description": "Ibisobanuro",
+      "details": "Ibisobanuro by'ibikorwa",
+      "toAccount": "Kuri konti",
+      "date": "Itariki/Igihe",
+      "balanceInfo": "Amakuru ya amafaranga"
+    }
   }
 }

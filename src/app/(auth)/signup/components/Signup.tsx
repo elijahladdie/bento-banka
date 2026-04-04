@@ -8,15 +8,19 @@ import GlassButton from "@/components/ui/GlassButton";
 import GlassInput from "@/components/ui/GlassInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { apiClient, extractErrorMessage } from "@/lib/api-client";
+import { uploadImageToCloudinary, validateProfileImage } from "@/lib/cloudinary";
 import { ApiSuccess } from "@/types";
 import { useUiText } from "@/lib/ui-text";
+import { useToast } from "@/hooks/useToast";
 
 const Signup = () => {
   const router = useRouter();
   const { t } = useUiText();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState<string | null>(null);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -42,24 +46,51 @@ const Signup = () => {
     return age;
   };
 
+  const handleProfilePictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setProfilePictureFile(null);
+      setProfilePicturePreview(null);
+      return;
+    }
+
+    const validationMessage = validateProfileImage(file);
+    if (validationMessage) {
+      showToast("error", t("auth.signup.failed", "Failed to create account"), validationMessage);
+      event.target.value = "";
+      setProfilePictureFile(null);
+      setProfilePicturePreview(null);
+      return;
+    }
+
+    setProfilePictureFile(file);
+    const reader = new FileReader();
+    reader.onload = () => setProfilePicturePreview(String(reader.result ?? ""));
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match");
+      showToast("error", t("auth.signup.passwordMismatch", "Passwords do not match"));
       return;
     }
 
     const age = calculateAge(form.dateOfBirth);
     if (Number.isNaN(age) || age < 18) {
-      setError("You must be at least 18 years old");
+      showToast("error", t("auth.signup.ageRequired", "You must be at least 18 years old"));
       return;
     }
 
     setLoading(true);
 
     try {
+      let profilePictureUrl: string | null = null;
+      if (profilePictureFile) {
+        profilePictureUrl = await uploadImageToCloudinary(profilePictureFile);
+      }
+
       await apiClient.post<ApiSuccess<unknown>>("/auth/register", {
         firstName: form.firstName,
         lastName: form.lastName,
@@ -69,14 +100,28 @@ const Signup = () => {
         password: form.password,
         age,
         roleSlug: "client",
-        profilePicture: null
+        profilePicture: profilePictureUrl
       });
       setLoading(false);
+      showToast("success", t("auth.signup.successTitle", "Account Created!"), t("auth.signup.successBody", "Your account is pending manager approval. You'll be notified by email."));
       setSuccess(true);
       setTimeout(() => router.push("/login"), 5000);
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
-      setError(extractErrorMessage(error, "Failed to create account"));
+      const responseData = (error as { response?: { data?: { message?: string; errors?: Array<{ field?: string; message?: string }> } } })?.response?.data;
+      const title = responseData?.message ?? t("auth.signup.failed", "Failed to create account");
+      const validationDetails = Array.isArray(responseData?.errors)
+        ? responseData.errors
+            .map((item) => {
+              const cleanField = (item.field ?? "field").replace(/^body\./, "");
+              return `${cleanField}: ${item.message ?? "Invalid value"}`;
+            })
+            .join("\n")
+        : typeof error.message === "string"
+        ? extractErrorMessage(error.message, t("auth.signup.failed", "Failed to create account")) :
+        typeof error === "string" ? extractErrorMessage(error, t("auth.signup.failed", "Failed to create account")) : null;
+
+      showToast("error", title, validationDetails);
     }
   };
 
@@ -134,6 +179,19 @@ const Signup = () => {
           <div className="space-y-1.5">
             <GlassInput label={t("auth.signup.address", "Address")} placeholder="Kigali, Rwanda" required value={form.address} onChange={(event) => setForm((prev) => ({ ...prev, address: event.target.value }))} />
           </div>
+          <div className="space-y-2">
+            <label className="glass-label">{t("auth.signup.profilePicture", "Profile Picture (optional)")}</label>
+            <input
+              type="file"
+              accept="image/*"
+              className="glass-input !px-4 !py-3 file:mr-3 file:rounded-full file:border-0 file:bg-primary/20 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-primary"
+              onChange={handleProfilePictureChange}
+            />
+            <p className="text-xs text-muted-foreground">{t("auth.signup.profilePictureHint", "Image only, max 2MB")}</p>
+            {profilePicturePreview ? (
+              <img src={profilePicturePreview} alt="profile preview" className="h-20 w-20 rounded-full border border-[var(--glass-border)] object-cover" />
+            ) : null}
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <GlassInput type="password" label={t("auth.signup.password", "Password")} placeholder="••••••••" required value={form.password} onChange={(event) => setForm((prev) => ({ ...prev, password: event.target.value }))} />
@@ -142,8 +200,6 @@ const Signup = () => {
               <GlassInput type="password" label={t("auth.signup.confirmPassword", "Confirm Password")} placeholder="••••••••" required value={form.confirmPassword} onChange={(event) => setForm((prev) => ({ ...prev, confirmPassword: event.target.value }))} />
             </div>
           </div>
-
-          {error && <p className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">{error}</p>}
 
           <div className="flex items-center gap-2">
             <Checkbox id="terms" required />

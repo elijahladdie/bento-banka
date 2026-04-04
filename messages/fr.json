@@ -8,7 +8,8 @@
     "cancel": "Annuler",
     "confirm": "Confirmer",
     "save": "Enregistrer",
-    "back": "Retour"
+    "back": "Retour",
+    "itemsPerPage": "Éléments par page"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -70,8 +71,7 @@
       "selectSource": "Sélectionner le compte source",
       "destination": "Numéro de compte destinataire",
       "amount": "Montant",
-      "transfer": "Transférer",
-      "notifications": "Notifications",
+      "transfer": "Transférer",      "description": "Description",      "notifications": "Notifications",
       "noNotifications": "Aucune notification pour le moment"
     },
     "manager": {
@@ -160,7 +160,275 @@
       "back": "Retour à la connexion"
     }
   },
+  "profile": {
+    "title": "Profil",
+    "personalInfo": "Informations personnelles",
+    "fullName": "Nom complet",
+    "phone": "Téléphone",
+    "email": "E-mail",
+    "nationalId": "ID National",
+    "saveChanges": "Enregistrer les modifications",
+    "changePassword": "Changer le mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmNewPassword": "Confirmer le nouveau mot de passe",
+    "updatePassword": "Mettre à jour le mot de passe",
+    "changePhoto": "Changer la photo",
+    "memberSince": "Membre depuis"
+  },
   "errors": {
     "invalidCredentials": "Identifiants invalides"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "non lues",
+    "markAllRead": "Tout marquer comme lu",
+    "empty": "Aucune notification",
+    "viewAll": "Voir toutes les notifications",
+    "allCaughtUp": "Vous êtes à jour",
+    "loadMore": "Charger plus",
+    "ACCOUNT_APPROVED": "Compte approuvé",
+    "ACCOUNT_REJECTED": "Compte refusé",
+    "ACCOUNT_FROZEN": "Compte gelé",
+    "ACCOUNT_DORMANT": "Compte dormant",
+    "ACCOUNT_CLOSED": "Compte fermé",
+    "DEPOSIT_RECEIVED": "Dépôt reçu",
+    "WITHDRAWAL_CODE_SENT": "Code de retrait envoyé",
+    "WITHDRAWAL_PROCESSED": "Retrait traité",
+    "TRANSFER_SENT": "Transfert envoyé",
+    "TRANSFER_RECEIVED": "Transfert reçu",
+    "PASSWORD_CHANGED": "Mot de passe modifié",
+    "PROFILE_UPDATED": "Profil mis à jour",
+    "USER_ACTIVATED": "Compte activé",
+    "USER_DEACTIVATED": "Compte désactivé",
+    "BANK_ACCOUNT_CREATED": "Compte bancaire créé",
+    "WELCOME": "Bienvenue chez BANKA"
+  },
+  "manager": {
+    "users": {
+      "create": {
+        "open": "Créer un utilisateur",
+        "drawerTitle": "Créer un compte utilisateur",
+        "drawerDescription": "Ajoutez un nouvel utilisateur et attribuez-lui un rôle.",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "E-mail",
+        "phone": "Numéro de téléphone",
+        "nationalId": "ID national",
+        "age": "Âge",
+        "password": "Mot de passe",
+        "profilePicture": "URL de photo de profil",
+        "profilePictureUpload": "Téléverser la photo de profil",
+        "profilePictureHint": "Image uniquement, 2 Mo maximum",
+        "profilePicturePreviewAlt": "Aperçu de la photo de profil",
+        "role": "Rôle",
+        "rolePlaceholder": "Sélectionnez un rôle",
+        "roles": {
+          "client": "Client",
+          "cashier": "Caissier",
+          "manager": "Gestionnaire"
+        },
+        "submit": "Créer le compte",
+        "success": "Compte utilisateur créé avec succès",
+        "error": "Échec de la création du compte utilisateur",
+        "validation": {
+          "required": "Veuillez remplir tous les champs obligatoires",
+          "age": "L'âge doit être au moins 18 ans"
+        }
+      },
+      "search": "Rechercher des utilisateurs...",
+      "filter": {
+        "all": "Tous les rôles",
+        "client": "Clients",
+        "cashier": "Caissiers",
+        "manager": "Gestionnaires"
+      },
+      "table": {
+        "user": "Utilisateur",
+        "email": "E-mail",
+        "role": "Rôle",
+        "status": "Statut",
+        "joined": "Inscrit",
+        "actions": "Actions",
+        "avatarAlt": "Avatar de l'utilisateur"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif",
+        "suspended": "Suspendu",
+        "pendingApproval": "En attente d'approbation"
+      },
+      "actions": {
+        "view": "Voir les informations"
+      },
+      "drawer": {
+        "title": "Détails de l'utilisateur",
+        "empty": "Aucun utilisateur sélectionné",
+        "noPhone": "Aucun numéro de téléphone",
+        "id": "ID utilisateur",
+        "nationalId": "ID national",
+        "age": "Âge",
+        "role": "Rôle",
+        "status": "Statut",
+        "joined": "Inscrit",
+        "statusTitle": "Modifier le statut de l'utilisateur",
+        "nextStatus": "Nouveau statut",
+        "nextStatusPlaceholder": "Sélectionnez un statut",
+        "reason": "Motif (facultatif)",
+        "updateStatus": "Mettre à jour le statut",
+        "statusSuccess": "Statut de l'utilisateur mis à jour avec succès",
+        "statusError": "Impossible de mettre à jour le statut de l'utilisateur",
+        "noSelection": "Veuillez sélectionner un utilisateur"
+      },
+      "empty": "Aucun utilisateur trouvé"
+    }
+  },
+  "accountForm": {
+    "title": "Créer un compte bancaire",
+    "subtitle": "Choisissez le type de compte pour ouvrir un nouveau compte.",
+    "fields": {
+      "type": "Type de compte",
+      "typePlaceholder": "Sélectionnez le type de compte"
+    },
+    "types": {
+      "saving": "Épargne",
+      "fixed": "Dépôt à terme"
+    },
+    "actions": {
+      "open": "Créer un compte bancaire",
+      "submit": "Créer un compte bancaire",
+      "creating": "Création en cours..."
+    },
+    "success": {
+      "created": "Demande de compte bancaire créée"
+    },
+    "errors": {
+      "typeRequired": "Veuillez sélectionner un type de compte",
+      "createFailed": "Impossible de créer le compte"
+    }
+  },
+  "notificationsPage": {
+    "title": "Notifications",
+    "subtitle": "Suivez toutes les mises à jour, alertes et activités du compte au même endroit.",
+    "loading": "Chargement des notifications...",
+    "emptyTitle": "Aucune notification",
+    "emptyDescription": "Lorsque des activités se produisent sur votre compte, elles apparaîtront ici.",
+    "filters": {
+      "all": "Toutes",
+      "read": "Lues",
+      "unread": "Non lues",
+      "sent": "Envoyées",
+      "received": "Reçues"
+    },
+    "actions": {
+      "refresh": "Actualiser",
+      "view": "Voir",
+      "hideDetails": "Masquer les détails",
+      "markRead": "Marquer comme lue",
+      "markUnread": "Marquer comme non lue",
+      "markAllRead": "Tout marquer comme lu"
+    },
+    "badges": {
+      "read": "Lue",
+      "unread": "Non lue",
+      "sent": "Envoyée",
+      "received": "Reçue"
+    },
+    "details": {
+      "title": "Détails de la notification",
+      "id": "ID",
+      "noMetadata": "Aucune métadonnée supplémentaire"
+    },
+    "success": {
+      "markAllRead": "Toutes les notifications sont marquées comme lues"
+    },
+    "errors": {
+      "markRead": "Impossible de marquer comme lue",
+      "markUnread": "Impossible de marquer comme non lue",
+      "markAllRead": "Impossible de tout marquer comme lu"
+    }
+  },
+  "filters": {
+    "allTypes": "Tous les types",
+    "allStatus": "Tous les statuts",
+    "title": "Filtres",
+    "type": "Filtrer par type",
+    "status": "Filtrer par statut",
+    "dateFrom": "À partir de",
+    "dateTo": "Jusqu'à",
+    "clear": "Effacer les filtres"
+  },
+  "transaction": {
+    "status": {
+      "pending": "En attente",
+      "completed": "Complété",
+      "failed": "Échoué"
+    }
+  },
+  "cashier": {
+    "withdrawalCodeSent": "Demande de retrait envoyée. Le client doit confirmer avec son code à 4 chiffres.",
+    "withdrawalHint": "Le code à 4 chiffres sera envoyé dans l'application au propriétaire du compte.",
+    "requestWithdrawal": "Demander le retrait",
+    "confirmWithdrawalCode": "Saisir le code de retrait",
+    "confirmWithdrawal": "Confirmer le retrait",
+    "confirmationCode": "code à 4 chiffres",
+    "confirmationPlaceholder": "1234",
+    "withdrawalFailed": "Échec du retrait",
+    "withdrawalConfirmed": "Retrait traité avec succès",
+    "withdrawalConfirmationFailed": "Impossible de confirmer le retrait",
+    "descriptionRequired": "La description de la transaction est requise",
+    "insufficient": "Solde insuffisant pour le retrait",
+    "depositSuccess": "Dépôt réussi",
+    "withdrawalSuccess": "Retrait réussi",
+    "depositFailed": "Échec du dépôt",
+    "transactionActions": "Choisir le type de transaction",
+    "confirmDeposit": "Confirmer le dépôt",
+    "confirmWithdraw": "Confirmer le retrait",
+    "processDeposit": "Traiter le dépôt",
+    "processWithdraw": "Traiter le retrait",
+    "withdrawForm": "Formulaire de retrait"
+  },
+  "client": {
+    "transactions": {
+      "withdraw": "Retrait",
+      "withdrawForm": "Demande de retrait",
+      "selectSourcePlaceholder": "Sélectionnez le compte source",
+      "descriptionPlaceholder": "Saisissez la raison du retrait",
+      "withdrawHint": "Vérifiez vos notifications pour le code à 4 chiffres après l'envoi.",
+      "requestWithdrawal": "Demander le retrait",
+      "confirmWithdrawal": "Confirmer le retrait",
+      "confirmationCode": "code à 4 chiffres",
+      "confirmationPlaceholder": "1234",
+      "account": "Compte",
+      "withdrawalCodeSent": "Consultez vos notifications pour le code à 4 chiffres afin de confirmer le retrait",
+      "withdrawalSuccess": "Retrait traité avec succès",
+      "withdrawalFailed": "Échec du retrait",
+      "withdrawalConfirmationFailed": "Impossible de confirmer le retrait",
+      "new": "Effectuer une transaction",
+      "amountRequired": "Le montant doit être supérieur à 0",
+      "minAmount": "Le montant minimum de la transaction est de 100 RWF",
+      "descriptionRequired": "La description de la transaction est requise",
+      "destinationTypeRequired": "Veuillez choisir si le compte destinataire est le vôtre ou celui d'un autre utilisateur",
+      "selectBothAccounts": "Veuillez sélectionner les comptes source et destinataire",
+      "insufficientBalance": "Solde insuffisant",
+      "transferSuccess": "Transfert réussi",
+      "operationFailed": "Opération échouée",
+      "noPendingWithdrawal": "Aucun retrait en attente sélectionné",
+      "confirm": "Confirmer le retrait",
+      "view": "Afficher",
+      "destinationType": "Type de destination",
+      "destinationOwn": "Mon propre compte",
+      "destinationOther": "Compte d'un autre utilisateur",
+      "noResults": "Aucun compte correspondant trouvé",
+      "selectedDestination": "Destination sélectionnée",
+      "amount": "Montant",
+      "continue": "Continuer",
+      "confirmTransaction": "Confirmer la transaction",
+      "description": "Description",
+      "details": "Détails de la transaction",
+      "toAccount": "Vers le compte",
+      "date": "Date/Heure",
+      "balanceInfo": "Informations de solde"
+    }
   }
 }

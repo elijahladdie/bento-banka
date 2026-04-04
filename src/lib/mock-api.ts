@@ -2,18 +2,13 @@
  * Mock API interceptor — intercepts all axios requests from apiClient
  * and returns mock data so the app works in sandbox without a backend.
  */
-import { apiClient } from "./api-client";
 import {
   mockUsers,
   mockAccounts,
   mockTransactions,
   mockNotifications,
-  mockStatsOverview,
-  mockStatsTransactions,
-  mockStatsAccounts,
-  mockStatsUsers,
 } from "@/data/mockData";
-import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import type { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 const TOKEN_KEY = "banka_token";
 const CURRENT_USER_KEY = "banka_current_user";
@@ -33,6 +28,61 @@ function getCurrentUser() {
   const raw = localStorage.getItem(CURRENT_USER_KEY);
   if (!raw) return null;
   try { return JSON.parse(raw); } catch { return null; }
+}
+
+function buildStatsOverview() {
+  return {
+    activeUsers: mockUsers.filter((u) => u.status === "active").length,
+    totalAccounts: mockAccounts.length,
+    transactionCount: mockTransactions.length,
+    transactionVolume: mockTransactions.reduce((sum, tx) => sum + (tx.amount ?? 0), 0),
+    pendingApprovals: mockUsers.filter((u) => u.status === "pending_approval").length,
+  };
+}
+
+function buildStatsTransactions() {
+  const grouped = new Map<string, { amount: number; count: number }>();
+  for (const tx of mockTransactions) {
+    const current = grouped.get(tx.type) ?? { amount: 0, count: 0 };
+    current.amount += tx.amount ?? 0;
+    current.count += 1;
+    grouped.set(tx.type, current);
+  }
+
+  return Array.from(grouped.entries()).map(([type, aggregate]) => ({
+    type,
+    _sum: { amount: aggregate.amount },
+    _count: { id: aggregate.count },
+  }));
+}
+
+function buildStatsAccounts() {
+  const grouped = new Map<string, number>();
+  for (const account of mockAccounts) {
+    const key = `${account.type}::${account.status}`;
+    grouped.set(key, (grouped.get(key) ?? 0) + 1);
+  }
+
+  return Array.from(grouped.entries()).map(([key, count]) => {
+    const [type, status] = key.split("::");
+    return {
+      type,
+      status,
+      _count: { id: count },
+    };
+  });
+}
+
+function buildStatsUsers() {
+  const grouped = new Map<string, number>();
+  for (const user of mockUsers) {
+    for (const userRole of user.userRoles) {
+      const role = userRole.role.slug;
+      grouped.set(role, (grouped.get(role) ?? 0) + 1);
+    }
+  }
+
+  return Array.from(grouped.entries()).map(([role, count]) => ({ role, count }));
 }
 
 function handleRequest(config: InternalAxiosRequestConfig): AxiosResponse {
@@ -73,6 +123,12 @@ function handleRequest(config: InternalAxiosRequestConfig): AxiosResponse {
   if (url.includes("/auth/forgot-password") && method === "post") {
     return success(null, "Reset link sent");
   }
+
+  // STATS must be checked before generic resource routes
+  if (url.includes("/stats/overview") && method === "get") return success(buildStatsOverview());
+  if (url.includes("/stats/transactions") && method === "get") return success(buildStatsTransactions());
+  if (url.includes("/stats/accounts") && method === "get") return success(buildStatsAccounts());
+  if (url.includes("/stats/users") && method === "get") return success(buildStatsUsers());
 
   // ACCOUNTS
   if (url.includes("/accounts") && !url.includes("/approve") && !url.includes("/reject") && method === "get") {
@@ -148,6 +204,7 @@ function handleRequest(config: InternalAxiosRequestConfig): AxiosResponse {
     if (account && account.balance < amt) {
       throw { response: { data: { success: false, resp_msg: "Insufficient funds", resp_code: 101 }, status: 400 } };
     }
+    const token = String(Math.floor(1000 + Math.random() * 9000));
     const newTxn = {
       id: "txn_withdraw_" + Date.now(),
       type: "withdraw" as const,
@@ -156,7 +213,8 @@ function handleRequest(config: InternalAxiosRequestConfig): AxiosResponse {
       performedBy: getCurrentUser()?.id ?? "unknown",
       amount: amt,
       reference: "TXN-" + Date.now().toString(36).toUpperCase(),
-      status: "completed" as const,
+      status: "pending" as const,
+      confirmationToken: token,
       description: data?.description ?? "Withdrawal",
       balanceBefore: account ? account.balance : 0,
       balanceAfter: account ? account.balance - amt : 0,
@@ -167,7 +225,72 @@ function handleRequest(config: InternalAxiosRequestConfig): AxiosResponse {
     };
     if (account) account.balance -= amt;
     mockTransactions.unshift(newTxn);
-    return success(newTxn, "Withdrawal successful");
+    const ownerId = account?.ownerId ?? getCurrentUser()?.id ?? "unknown";
+    mockNotifications.unshift({
+      id: "notif_withdraw_code_" + Date.now(),
+      type: "WITHDRAWAL_CODE_SENT",
+      title: "Withdrawal Confirmation Code",
+      message: `Use code ${token} to confirm the withdrawal for account ${account?.accountNumber ?? data?.fromAccount ?? ""}.`,
+      isRead: false,
+      readAt: null,
+      userId: ownerId,
+      direction: "RECEIVED",
+      createdAt: new Date().toISOString(),
+      metadata: {
+        transactionId: newTxn.id,
+        accountId: data?.fromAccount,
+        accountNumber: account?.accountNumber,
+        amount: amt,
+        currency: "RWF",
+        code: token,
+      } as any,
+    } as any);
+    return success(
+      {
+        account: account ? { id: account.id, balance: account.balance } : null,
+        transaction: { ...newTxn, confirmationToken: null },
+        ownerId,
+        accountNumber: account?.accountNumber,
+      },
+      "Withdrawal request submitted"
+    );
+  }
+
+  if (url.includes("/transactions/confirm-withdrawal") && method === "post") {
+    const txn = mockTransactions.find((tx) => tx.id === data?.transactionId && tx.type === "withdraw");
+    if (!txn) {
+      throw { response: { data: { success: false, resp_msg: "Transaction not found", resp_code: 101 }, status: 404 } };
+    }
+    if (txn.status !== "pending") {
+      throw { response: { data: { success: false, resp_msg: "Transaction already processed", resp_code: 101 }, status: 400 } };
+    }
+    if (String((txn as any).confirmationToken ?? "") !== String(data?.confirmationCode ?? "")) {
+      throw { response: { data: { success: false, resp_msg: "Invalid confirmation code", resp_code: 101 }, status: 400 } };
+    }
+
+    txn.status = "completed" as const;
+    (txn as any).confirmationToken = null;
+    mockNotifications.unshift({
+      id: "notif_withdraw_done_" + Date.now(),
+      type: "WITHDRAWAL_PROCESSED",
+      title: "Withdrawal Processed",
+      message: `A withdrawal of RWF ${txn.amount} has been debited from your account ${txn.fromAccount}.`,
+      isRead: false,
+      readAt: null,
+      userId: getCurrentUser()?.id ?? "unknown",
+      direction: "RECEIVED",
+      createdAt: new Date().toISOString(),
+    } as any);
+    return success(
+      {
+        transaction: { ...txn, confirmationToken: null },
+        sourceAccount: {
+          ownerId: txn.performedBy,
+          accountNumber: txn.fromAccount,
+        },
+      },
+      "Withdrawal confirmed"
+    );
   }
 
   // USERS
@@ -184,12 +307,6 @@ function handleRequest(config: InternalAxiosRequestConfig): AxiosResponse {
     return success({ id, status: data?.status }, "User status updated");
   }
 
-  // STATS
-  if (url.includes("/stats/overview")) return success(mockStatsOverview);
-  if (url.includes("/stats/transactions")) return success(mockStatsTransactions);
-  if (url.includes("/stats/accounts")) return success(mockStatsAccounts);
-  if (url.includes("/stats/users")) return success(mockStatsUsers);
-
   // NOTIFICATIONS
   if (url.includes("/notifications")) return success(mockNotifications);
 
@@ -198,23 +315,19 @@ function handleRequest(config: InternalAxiosRequestConfig): AxiosResponse {
 }
 
 /** Install mock interceptors on apiClient */
-export function installMockApi() {
-  // Request interceptor that short-circuits and never actually sends to network
-  apiClient.interceptors.request.use((config) => {
+export function installMockApi(client: AxiosInstance) {
+  client.interceptors.request.use((config) => {
     const response = handleRequest(config);
-    // We throw a special "cancel" with the response attached
-    // The response interceptor will catch it
     return Promise.reject({ __mockResponse: response, config }) as any;
   });
 
   // Response interceptor that catches our mock "errors" and returns them as successful responses
-  apiClient.interceptors.response.use(
+  client.interceptors.response.use(
     (response) => response,
     (error) => {
       if (error?.__mockResponse) {
         return Promise.resolve(error.__mockResponse);
       }
-      // Real error from mock handler (e.g. auth failure)
       if (error?.response) {
         return Promise.reject({ response: error.response, isAxiosError: true });
       }

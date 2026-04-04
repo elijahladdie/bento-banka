@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Landmark, Eye, EyeOff } from "lucide-react";
 import GlassCard from "@/components/ui/GlassCard";
@@ -11,20 +11,26 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AUTH_ROUTES } from "@/constants/routes";
 import { getDashboardRouteByRole } from "@/services/auth.service";
 import { useUiText } from "@/lib/ui-text";
+import { useToast } from "@/hooks/useToast";
 
 const Login = () => {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, isAuthenticated, role, initialized } = useAuth();
   const { t } = useUiText();
+  const { showToast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (!initialized) return;
 
+    if (isAuthenticated) {
+      router.replace(getDashboardRouteByRole((role as "client" | "cashier" | "manager" | null) ?? null));
+    }
+  }, [initialized, isAuthenticated, role, router]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
     const result = await login(email, password);
     setLoading(false);
@@ -32,7 +38,7 @@ const Login = () => {
       const role = "role" in result ? result.role : null;
       router.push(getDashboardRouteByRole((role as "client" | "cashier" | "manager" | null) ?? null));
     } else {
-      setError(result.error || "Login failed");
+      showToast("error", result.error || t("auth.login.failed", "Login failed"));
     }
   };
 
@@ -72,8 +78,6 @@ const Login = () => {
             </div>
             <button type="button" onClick={() => router.push(AUTH_ROUTES.forgotPassword)} className="text-sm text-primary hover:underline">{t("auth.login.forgot", "Forgot Password?")}</button>
           </div>
-
-          {error && <p className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">{error}</p>}
 
           <GlassButton className="w-full" type="submit" disabled={loading} loading={loading} loadingText={t("common.loading", "Loading...")}>{t("auth.login.submit", "Sign In")}</GlassButton>
         </form>

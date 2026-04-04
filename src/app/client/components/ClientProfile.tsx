@@ -1,5 +1,5 @@
-import UnifiedProfileWorkspace from "@/components/profile/UnifiedProfileWorkspace";
+import UnifiedProfile from "@/components/profile/UnifiedProfile";
 
 export default function ClientProfile() {
-  return <UnifiedProfileWorkspace />;
+  return <UnifiedProfile />;
 }

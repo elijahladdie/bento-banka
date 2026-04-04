@@ -8,7 +8,8 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "save": "Save",
-    "back": "Back"
+    "back": "Back",
+    "itemsPerPage": "Items per page"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -94,6 +95,7 @@
       "destination": "Destination account number",
       "amount": "Amount",
       "transfer": "Transfer",
+      "description": "Description",
       "notifications": "Notifications",
       "noNotifications": "No notifications yet"
     },
@@ -183,7 +185,275 @@
       "back": "Back to Login"
     }
   },
+  "profile": {
+    "title": "Profile",
+    "personalInfo": "Personal Information",
+    "fullName": "Full Name",
+    "phone": "Phone",
+    "email": "Email",
+    "nationalId": "National ID",
+    "saveChanges": "Save Changes",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "changePhoto": "Change Photo",
+    "memberSince": "Member since"
+  },
   "errors": {
     "invalidCredentials": "Invalid credentials"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "unread",
+    "markAllRead": "Mark all read",
+    "empty": "No notifications yet",
+    "viewAll": "View all notifications",
+    "allCaughtUp": "You're all caught up",
+    "loadMore": "Load more",
+    "ACCOUNT_APPROVED": "Account Approved",
+    "ACCOUNT_REJECTED": "Account Rejected",
+    "ACCOUNT_FROZEN": "Account Frozen",
+    "ACCOUNT_DORMANT": "Account Dormant",
+    "ACCOUNT_CLOSED": "Account Closed",
+    "DEPOSIT_RECEIVED": "Deposit Received",
+    "WITHDRAWAL_CODE_SENT": "Withdrawal Code Sent",
+    "WITHDRAWAL_PROCESSED": "Withdrawal Processed",
+    "TRANSFER_SENT": "Transfer Sent",
+    "TRANSFER_RECEIVED": "Transfer Received",
+    "PASSWORD_CHANGED": "Password Changed",
+    "PROFILE_UPDATED": "Profile Updated",
+    "USER_ACTIVATED": "Account Activated",
+    "USER_DEACTIVATED": "Account Deactivated",
+    "BANK_ACCOUNT_CREATED": "Bank Account Created",
+    "WELCOME": "Welcome to BANKA"
+  },
+  "manager": {
+    "users": {
+      "create": {
+        "open": "Create User",
+        "drawerTitle": "Create User Account",
+        "drawerDescription": "Add a new user and assign a platform role.",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phone": "Phone Number",
+        "nationalId": "National ID",
+        "age": "Age",
+        "password": "Password",
+        "profilePicture": "Profile Picture URL",
+        "profilePictureUpload": "Upload Profile Picture",
+        "profilePictureHint": "Image only, max 2MB",
+        "profilePicturePreviewAlt": "Profile picture preview",
+        "role": "Role",
+        "rolePlaceholder": "Select role",
+        "roles": {
+          "client": "Client",
+          "cashier": "Cashier",
+          "manager": "Manager"
+        },
+        "submit": "Create Account",
+        "success": "User account created successfully",
+        "error": "Failed to create user account",
+        "validation": {
+          "required": "Please fill all required fields",
+          "age": "Age must be at least 18"
+        }
+      },
+      "search": "Search users...",
+      "filter": {
+        "all": "All Roles",
+        "client": "Clients",
+        "cashier": "Cashiers",
+        "manager": "Managers"
+      },
+      "table": {
+        "user": "User",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "joined": "Joined",
+        "actions": "Actions",
+        "avatarAlt": "User avatar"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "suspended": "Suspended",
+        "pendingApproval": "Pending Approval"
+      },
+      "actions": {
+        "view": "View user info"
+      },
+      "drawer": {
+        "title": "User Details",
+        "empty": "No user selected",
+        "noPhone": "No phone number",
+        "id": "User ID",
+        "nationalId": "National ID",
+        "age": "Age",
+        "role": "Role",
+        "status": "Status",
+        "joined": "Joined",
+        "statusTitle": "Change User Status",
+        "nextStatus": "New Status",
+        "nextStatusPlaceholder": "Select status",
+        "reason": "Reason (optional)",
+        "updateStatus": "Update Status",
+        "statusSuccess": "User status updated successfully",
+        "statusError": "Failed to update user status",
+        "noSelection": "Please select a user"
+      },
+      "empty": "No users found"
+    }
+  },
+  "accountForm": {
+    "title": "Create Bank Account",
+    "subtitle": "Choose the account type to open a new account.",
+    "fields": {
+      "type": "Account Type",
+      "typePlaceholder": "Select account type"
+    },
+    "types": {
+      "saving": "Saving",
+      "fixed": "Fixed"
+    },
+    "actions": {
+      "open": "Create Bank Account",
+      "submit": "Create Bank Account",
+      "creating": "Creating..."
+    },
+    "success": {
+      "created": "Bank account request created"
+    },
+    "errors": {
+      "typeRequired": "Please select an account type",
+      "createFailed": "Unable to create account"
+    }
+  },
+  "notificationsPage": {
+    "title": "Notifications",
+    "subtitle": "Track all updates, alerts, and account activity in one place.",
+    "loading": "Loading notifications...",
+    "emptyTitle": "No notifications yet",
+    "emptyDescription": "When activity happens on your account, it will appear here.",
+    "filters": {
+      "all": "All",
+      "read": "Read",
+      "unread": "Unread",
+      "sent": "Sent",
+      "received": "Received"
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "view": "View",
+      "hideDetails": "Hide details",
+      "markRead": "Mark read",
+      "markUnread": "Mark unread",
+      "markAllRead": "Mark all as read"
+    },
+    "badges": {
+      "read": "Read",
+      "unread": "Unread",
+      "sent": "Sent",
+      "received": "Received"
+    },
+    "details": {
+      "title": "Notification details",
+      "id": "ID",
+      "noMetadata": "No additional metadata"
+    },
+    "success": {
+      "markAllRead": "All notifications marked as read"
+    },
+    "errors": {
+      "markRead": "Unable to mark as read",
+      "markUnread": "Unable to mark as unread",
+      "markAllRead": "Unable to mark all as read"
+    }
+  },
+  "filters": {
+    "allTypes": "All Types",
+    "allStatus": "All Status",
+    "title": "Filters",
+    "type": "Filter by type",
+    "status": "Filter by status",
+    "dateFrom": "From date",
+    "dateTo": "To date",
+    "clear": "Clear filters"
+  },
+  "transaction": {
+    "status": {
+      "pending": "Pending",
+      "completed": "Completed",
+      "failed": "Failed"
+    }
+  },
+  "cashier": {
+    "withdrawalCodeSent": "Withdrawal request sent. The client must confirm with their 4-digit code.",
+    "withdrawalHint": "The 4-digit code will be sent in-app to the account owner.",
+    "requestWithdrawal": "Request Withdrawal",
+    "confirmWithdrawalCode": "Enter Withdrawal Code",
+    "confirmWithdrawal": "Confirm Withdrawal",
+    "confirmationCode": "4-digit code",
+    "confirmationPlaceholder": "1234",
+    "withdrawalFailed": "Withdrawal failed",
+    "withdrawalConfirmed": "Withdrawal processed successfully",
+    "withdrawalConfirmationFailed": "Unable to confirm withdrawal",
+    "descriptionRequired": "Transaction description is required",
+    "insufficient": "Insufficient balance for withdrawal",
+    "depositSuccess": "Deposit successful",
+    "withdrawalSuccess": "Withdrawal successful",
+    "depositFailed": "Deposit failed",
+    "transactionActions": "Choose Transaction Type",
+    "confirmDeposit": "Confirm Deposit",
+    "confirmWithdraw": "Confirm Withdrawal",
+    "processDeposit": "Process Deposit",
+    "processWithdraw": "Process Withdrawal",
+    "withdrawForm": "Withdraw Form"
+  },
+  "client": {
+    "transactions": {
+      "withdraw": "Withdraw",
+      "withdrawForm": "Withdrawal Request",
+      "selectSourcePlaceholder": "Select source account",
+      "descriptionPlaceholder": "Enter withdrawal reason",
+      "withdrawHint": "Check your notifications for the 4-digit code after submitting.",
+      "requestWithdrawal": "Request Withdrawal",
+      "confirmWithdrawal": "Confirm Withdrawal",
+      "confirmationCode": "4-digit code",
+      "confirmationPlaceholder": "1234",
+      "account": "Account",
+      "withdrawalCodeSent": "Check your notifications for the 4-digit code to confirm withdrawal",
+      "withdrawalSuccess": "Withdrawal processed successfully",
+      "withdrawalFailed": "Withdrawal failed",
+      "withdrawalConfirmationFailed": "Unable to confirm withdrawal",
+      "new": "Transact",
+      "amountRequired": "Amount must be greater than 0",
+      "minAmount": "Minimum transaction amount is 100 RWF",
+      "descriptionRequired": "Transaction description is required",
+      "destinationTypeRequired": "Please choose whether destination account is your own or another user's",
+      "selectBothAccounts": "Please select both source and destination accounts",
+      "insufficientBalance": "Insufficient balance",
+      "transferSuccess": "Transfer successful",
+      "operationFailed": "Operation failed",
+      "noPendingWithdrawal": "No pending withdrawal selected",
+      "confirm": "Confirm Withdrawal",
+      "view": "View",
+      "destinationType": "Destination Type",
+      "destinationOwn": "My own account",
+      "destinationOther": "Another user's account",
+      "noResults": "No matching accounts found",
+      "selectedDestination": "Selected destination",
+      "amount": "Amount",
+      "continue": "Continue",
+      "confirmTransaction": "Confirm Transaction",
+      "description": "Description",
+      "details": "Transaction Details",
+      "toAccount": "To Account",
+      "date": "Date/Time",
+      "balanceInfo": "Balance Info"
+    }
   }
 }
