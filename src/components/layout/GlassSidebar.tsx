@@ -34,15 +34,16 @@ export default function GlassSidebar({ role, open = true }: GlassSidebarProps) {
     client: [
       { icon: LayoutDashboard, labelKey: "nav.dashboard", href: "/client/dashboard" },
       { icon: CreditCard, labelKey: "nav.accounts", href: "/client/accounts" },
-      { icon: ArrowLeftRight, labelKey: "nav.transfer", href: "/client/transfer" },
-      { icon: FileText, labelKey: "nav.transactions", href: "/client/accounts" },
-      { icon: Bell, labelKey: "nav.notifications", href: "/client/notifications" },
-      { icon: User, labelKey: "nav.profile", href: "/client/profile" },
+      { icon: ArrowLeftRight, labelKey: "nav.transactions", href: "/client/transactions" },
+      { icon: Bell, labelKey: "nav.notifications", href: "/notifications" },
+      { icon: User, labelKey: "nav.profile", href: "/profile" },
     ],
     cashier: [
       { icon: LayoutDashboard, labelKey: "nav.dashboard", href: "/cashier/dashboard" },
       { icon: Search, labelKey: "nav.clients", href: "/cashier/clients" },
-      { icon: FileText, labelKey: "nav.transactions", href: "/cashier/dashboard" },
+      { icon: FileText, labelKey: "nav.transactions", href: "/cashier/transactions" },
+      { icon: Bell, labelKey: "nav.notifications", href: "/notifications" },
+      { icon: User, labelKey: "nav.profile", href: "/profile" },
     ],
     manager: [
       { icon: LayoutDashboard, labelKey: "nav.dashboard", href: "/manager/dashboard" },
@@ -51,6 +52,8 @@ export default function GlassSidebar({ role, open = true }: GlassSidebarProps) {
       { icon: CreditCard, labelKey: "nav.accounts", href: "/manager/accounts" },
       { icon: FileText, labelKey: "nav.transactions", href: "/manager/transactions" },
       { icon: BarChart2, labelKey: "nav.statistics", href: "/manager/statistics" },
+      { icon: Bell, labelKey: "nav.notifications", href: "/notifications" },
+      { icon: User, labelKey: "nav.profile", href: "/profile" },
     ],
   };
 
@@ -60,7 +63,7 @@ export default function GlassSidebar({ role, open = true }: GlassSidebarProps) {
         const Icon = item.icon;
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
-          <Link key={item.href} href={item.href} className={`sidebar-item ${active ? "active" : ""}`}>
+          <Link key={`${item.href}-${Math.random()}`} href={item.href} className={`sidebar-item ${active ? "active" : ""}`}>
             <Icon size={18} />
             <span>{t(item.labelKey)}</span>
           </Link>

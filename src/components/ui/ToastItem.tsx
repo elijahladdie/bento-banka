@@ -29,7 +29,7 @@ export default function ToastItem({ toast, onRemove }: ToastItemProps) {
       <Icon size={18} />
       <div style={{ flex: 1 }}>
         <div style={{ fontWeight: 700 }}>{toast.title}</div>
-        {toast.message ? <div style={{ color: "var(--text-secondary)", marginTop: 4 }}>{toast.message}</div> : null}
+        {toast.message ? <div style={{ color: "var(--text-secondary)", marginTop: 4, whiteSpace: "pre-line" }}>{toast.message}</div> : null}
       </div>
       <button className="btn-icon" style={{ padding: 4 }} onClick={() => onRemove(toast.id)}>
         <X size={14} />

@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import GlassCard from "./GlassCard";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 
 interface Column<T> {
   key: string;
@@ -26,46 +27,46 @@ export default function GlassTable<T extends { id: string }>({
   return (
     <GlassCard padding="none" nohover>
       <div className="overflow-x-auto">
-        <table className="glass-table" role="table">
-          <thead>
-            <tr>
+        <Table className="glass-table" role="table">
+          <TableHeader>
+            <TableRow>
               {columns.map((col) => (
-                <th key={col.key} style={{ textAlign: col.align ?? "left" }} scope="col">
+                <TableHead key={col.key} style={{ textAlign: col.align ?? "left" }} scope="col">
                   {col.header}
-                </th>
+                </TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {loading
               ? Array.from({ length: 5 }).map((_, rowIdx) => (
-                  <tr key={`skeleton-${rowIdx}`}>
+                  <TableRow key={`skeleton-${rowIdx}`}>
                     {columns.map((col, colIdx) => (
-                      <td key={`${col.key}-${colIdx}`}>
+                      <TableCell key={`${col.key}-${colIdx}`}>
                         <div className="glass-skeleton h-3 rounded-lg" />
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))
               : data.length === 0
                 ? (
-                  <tr>
-                    <td colSpan={columns.length} className="py-12 text-center text-[var(--text-muted)]">
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="py-12 text-center text-[var(--text-muted)]">
                       {emptyMessage}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )
                 : data.map((row) => (
-                  <tr key={row.id} onClick={() => onRowClick?.(row)} className={onRowClick ? "cursor-pointer" : "cursor-default"}>
+                  <TableRow key={row.id} onClick={() => onRowClick?.(row)} className={onRowClick ? "cursor-pointer" : "cursor-default"}>
                     {columns.map((col) => (
-                      <td key={col.key} style={{ textAlign: col.align ?? "left" }}>
+                      <TableCell key={col.key} style={{ textAlign: col.align ?? "left" }}>
                         {col.render ? col.render(row) : String((row as Record<string, unknown>)[col.key] ?? "")}
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </GlassCard>
   );
