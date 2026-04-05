@@ -44,6 +44,13 @@ export function getPreferredLanguage(): SupportedLanguage {
 apiClient.interceptors.request.use((config) => {
   const headers = AxiosHeaders.from(config.headers);
   headers.set("Accept-Language", getPreferredLanguage());
+
+  const token = authStorage.getToken();
+  if (token) {
+    const normalizedToken = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
+    headers.set("Authorization", normalizedToken);
+  }
+
   config.headers = headers;
   return config;
 });
