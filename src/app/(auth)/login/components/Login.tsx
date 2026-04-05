@@ -66,10 +66,13 @@ const Login = () => {
 
           <div className="space-y-2">
             <div className="relative">
-              <GlassInput id="password" type={showPassword ? "text" : "password"} label={t("auth.login.password", "Password")} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="pr-10" />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+              <GlassInput id="password" type={showPassword ? "text" : "password"} label={t("auth.login.password", "Password")} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="pr-10"
+              icon={showPassword ? <EyeOff className="h-4 w-4" onClick={() => setShowPassword(!showPassword)} /> : <Eye className="h-4 w-4" onClick={() => setShowPassword(!showPassword)}/>}
+              iconPosition="right"
+              />
+              {/* <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"> */}
+                
+              {/* </button> */}
             </div>
           </div>
 
