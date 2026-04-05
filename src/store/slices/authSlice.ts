@@ -73,7 +73,9 @@ export const fetchMeThunk = createAsyncThunk<User>(
     try {
       const response = await apiClient.get("/auth/me");
       const data = response.data?.data ?? response.data;
-      return normalizeUser((data.user ?? data) as ApiUser);
+      const user = normalizeUser((data.user ?? data) as ApiUser);
+      authStorage.setUser(user);
+      return user;
     } catch (error) {
       return rejectWithValue(extractErrorMessage(error, "Failed to fetch current user"));
     }
@@ -101,6 +103,7 @@ export const updateProfileThunk = createAsyncThunk<
       lastName?: string;
       phoneNumber?: string;
       profilePicture?: string;
+      preferredLanguage?: "en" | "fr" | "kin";
     };
   }
 >(

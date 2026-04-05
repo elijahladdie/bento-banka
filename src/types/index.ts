@@ -22,6 +22,7 @@ export type User = {
 	firstName: string;
 	lastName?: string | null;
 	email: string;
+	preferredLanguage?: "en" | "fr" | "kin";
 	phoneNumber?: string | null;
 	nationalId?: string;
 	profilePicture?: string | null;

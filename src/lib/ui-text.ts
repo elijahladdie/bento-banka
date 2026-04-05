@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import en from "../../messages/en.json";
 import fr from "../../messages/fr.json";
 import kin from "../../messages/kin.json";
+import { authStorage, getPreferredLanguage, type SupportedLanguage } from "@/lib/api-client";
 
-type LocaleCode = "en" | "fr" | "kin";
+type LocaleCode = SupportedLanguage;
 
 type Dictionary = Record<string, unknown>;
 
@@ -23,13 +24,16 @@ const getByPath = (dict: Dictionary, path: string): string | undefined => {
 };
 
 export function useUiText() {
-  const [locale, setLocale] = useState<LocaleCode>("en");
+  const [locale, setLocale] = useState<LocaleCode>(() => getPreferredLanguage());
 
   useEffect(() => {
-    const rawLocale = localStorage.getItem("banka_lang");
-    if (rawLocale === "en" || rawLocale === "fr" || rawLocale === "kin") {
-      setLocale(rawLocale);
+    const userLanguage = authStorage.getUser()?.preferredLanguage;
+    if (userLanguage === "en" || userLanguage === "fr" || userLanguage === "kin") {
+      setLocale(userLanguage);
+      return;
     }
+
+    setLocale(getPreferredLanguage());
   }, []);
 
   return useMemo(
