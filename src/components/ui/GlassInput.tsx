@@ -45,7 +45,7 @@ const GlassInput = forwardRef<HTMLInputElement, GlassInputProps>(
           />
 
           {hasIcon && iconPosition === "right" && (
-            <span className="absolute right-3 pointer-events-none text-muted-foreground">
+            <span className="absolute right-3 pointer-events-auto text-muted-foreground">
               {icon}
             </span>
           )}
