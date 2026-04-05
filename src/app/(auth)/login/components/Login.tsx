@@ -22,6 +22,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const frontendState = (process.env.FRONTEND_STATE ?? "client").toLowerCase();
+
   useEffect(() => {
     if (!initialized) return;
 
@@ -87,15 +89,16 @@ const Login = () => {
           <button onClick={() => router.push(AUTH_ROUTES.signup)} className="text-primary hover:underline font-medium">{t("auth.login.signup", "Sign Up")}</button>
         </p>
 
-        {/* Quick login hint for demo */}
-        <div className="mt-6 rounded-lg border border-[var(--glass-border)] bg-[var(--glass-bg)] p-3">
-          <p className="mb-2 text-center text-xs font-medium text-muted-foreground">{t("auth.login.demoHint", "Demo Accounts (any password):")}</p>
-          <div className="space-y-1 text-xs text-muted-foreground">
-            <p><span className="text-primary">{t("auth.login.client", "Client")}:</span> jean.pierre@banka.rw</p>
-            <p><span className="text-primary">{t("auth.login.cashier", "Cashier")}:</span> amina.uwase@banka.rw</p>
-            <p><span className="text-primary">{t("auth.login.manager", "Manager")}:</span> eric.nkurunziza@banka.rw</p>
+        {frontendState ==="sandbox" && (
+          <div className="mt-6 rounded-lg border border-[var(--glass-border)] bg-[var(--glass-bg)] p-3">
+            <p className="mb-2 text-center text-xs font-medium text-muted-foreground">{t("auth.login.demoHint", "Demo Accounts (any password):")}</p>
+            <div className="space-y-1 text-xs text-muted-foreground">
+              <p><span className="text-primary">{t("auth.login.client", "Client")}:</span> jean.pierre@banka.rw</p>
+              <p><span className="text-primary">{t("auth.login.cashier", "Cashier")}:</span> amina.uwase@banka.rw</p>
+              <p><span className="text-primary">{t("auth.login.manager", "Manager")}:</span> eric.nkurunziza@banka.rw</p>
+            </div>
           </div>
-        </div>
+        )}
       </GlassCard>
     </div>
   );
