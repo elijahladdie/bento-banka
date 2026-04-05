@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { updateProfileThunk } from "@/store/slices/authSlice";
+import { getPreferredLanguage, type SupportedLanguage } from "@/lib/api-client";
 
 const langs = [
   { code: "kin", label: "Kiny", flag: "🇷🇼" },
@@ -9,18 +12,43 @@ const langs = [
 ] as const;
 
 export default function LanguageSwitcher() {
-  const [locale, setLocale] = useState("en");
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+  const [locale, setLocale] = useState<SupportedLanguage>(() => getPreferredLanguage());
 
   useEffect(() => {
-    const saved = localStorage.getItem("banka_lang");
-    if (saved) setLocale(saved);
+    setLocale(getPreferredLanguage());
   }, []);
 
-  const switchLang = (code: string) => {
-    localStorage.setItem("banka_lang", code);
+  const switchLang = async (code: SupportedLanguage) => {
+    const previousLanguage = getPreferredLanguage();
     setLocale(code);
-    // Reload to pick up new language
-    window.location.reload();
+
+    if (!user?.id) {
+      localStorage.setItem("banka_lang", code);
+      window.location.reload();
+      return;
+    }
+
+    try {
+      await dispatch(
+        updateProfileThunk({
+          userId: user.id,
+          data: {
+            firstName: user.firstName,
+            lastName: user.lastName ?? undefined,
+            phoneNumber: user.phoneNumber ?? undefined,
+            profilePicture: user.profilePicture ?? undefined,
+            preferredLanguage: code
+          }
+        })
+      ).unwrap();
+
+      window.location.reload();
+    } catch {
+      const fallback = previousLanguage;
+      setLocale(fallback);
+    }
   };
 
   return (

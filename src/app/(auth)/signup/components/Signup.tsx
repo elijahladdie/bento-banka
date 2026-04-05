@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/useToast";
 
 const Signup = () => {
   const router = useRouter();
-  const { t } = useUiText();
+  const { locale, t } = useUiText();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -99,6 +99,7 @@ const Signup = () => {
         nationalId: form.nationalId,
         password: form.password,
         age,
+        preferredLanguage: locale,
         roleSlug: "client",
         profilePicture: profilePictureUrl
       });

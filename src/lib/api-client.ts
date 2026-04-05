@@ -1,10 +1,21 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosHeaders } from "axios";
 import type { ApiError, ApiSuccess } from "@/types";
 import { installMockApi } from "./mock-api";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api";
 const TOKEN_STORAGE_KEY = "banka_token";
 const USER_STORAGE_KEY = "banka_user";
+const LANGUAGE_STORAGE_KEY = "banka_lang";
+
+export type SupportedLanguage = "en" | "fr" | "kin";
+
+function normalizeLanguage(language: unknown): SupportedLanguage | null {
+  if (language === "en" || language === "fr" || language === "kin") {
+    return language;
+  }
+
+  return null;
+}
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -12,6 +23,29 @@ export const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json"
   }
+});
+
+export function getPreferredLanguage(): SupportedLanguage {
+  if (typeof window === "undefined") {
+    return "en";
+  }
+
+  const user = authStorage.getUser();
+  if (user) {
+    return normalizeLanguage(user.preferredLanguage) ?? "en";
+  }
+
+  const language = normalizeLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY));
+  if (language) return language;
+
+  return "en";
+}
+
+apiClient.interceptors.request.use((config) => {
+  const headers = AxiosHeaders.from(config.headers);
+  headers.set("Accept-Language", getPreferredLanguage());
+  config.headers = headers;
+  return config;
 });
 
 let mockInstalled = false;
