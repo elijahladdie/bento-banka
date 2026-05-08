@@ -102,7 +102,11 @@ const ClientTransactions = () => {
 
   // Get client's accounts
   const clientAccounts = useMemo(
-    () => accounts.filter((acc) => acc.owner?.id === user?.id),
+    () =>
+      accounts.filter(
+        (acc) =>
+          String(acc.ownerId ?? acc.owner?.id ?? "") === String(user?.id ?? "")
+      ),
     [accounts, user?.id]
   );
 
@@ -202,18 +206,21 @@ useEffect(() => {
       const items = response.data?.data ?? [];
 
       let filtered: any[] = [];
+      const currentUserId = String(user?.id ?? "");
 
       if (destinationMode === "own") {
         // ✅ ONLY MY ACCOUNTS
         filtered = items.filter(
           (account) =>
-            account.ownerId === user.id && account.id !== fromAccountId
+            String(account.ownerId ?? account.owner?.id ?? "") === currentUserId &&
+            account.id !== fromAccountId
         );
       } else {
         // ✅ OTHER PEOPLE'S ACCOUNTS
         filtered = items.filter(
           (account) =>
-            account.ownerId !== user.id && account.id !== fromAccountId
+            String(account.ownerId ?? account.owner?.id ?? "") !== currentUserId &&
+            account.id !== fromAccountId
         );
       }
 
@@ -226,7 +233,7 @@ useEffect(() => {
   }, 300);
 
   return () => window.clearTimeout(timeout);
-}, [toAccountSearch, destinationMode, fromAccountId, user.id]);
+}, [toAccountSearch, destinationMode, fromAccountId, user?.id]);
   useEffect(() => {
     if (toAccountId && toAccountId === fromAccountId) {
       setToAccountId("");

@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosHeaders } from "axios";
-import type { ApiError, ApiSuccess } from "@/types";
+import type { ApiError } from "@/types";
 import { installMockApi } from "./mock-api";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api";
