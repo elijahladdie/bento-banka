@@ -8,7 +8,7 @@ import {
   Lock,
 } from "@lucide/astro";
 // export const prerender = false;
-import AmbientBackground from "./ui/AmbientBackground";
+import AmbientBackground from "./ui/AmbientBackground.astro";
 import Footer from "./Footer.astro";
 // React island
 import { createTranslator } from "../utils/ui";
@@ -105,13 +105,23 @@ const steps = [
     descKey: "landing.steps.transact.desc",
   },
 ];
+
+const localeScript = `
+(function() {
+  const select = document.getElementById("language-switcher");
+  select?.addEventListener("change", (e) => {
+    const locale = e.target.value;
+    document.cookie = \`locale=\${locale}; path=/; max-age=31536000\`;
+  });
+})();
+`;
 ---
 
 <div class="min-h-screen bg-background">
   <AmbientBackground />
 
   <!-- Nav -->
-  <Nav client:load, t={t} languages={languages} currentLocale={currentLocale} />
+  <Nav t={t} languages={languages} currentLocale={currentLocale} />
 
   <!-- Hero -->
   <Hero t={t} />
@@ -136,15 +146,5 @@ const steps = [
     }}
   />
 
-  <script>
-    const select = document.getElementById("language-switcher");
-
-    select?.addEventListener("change", (e: any) => {
-      const locale = e.target.value;
-
-      document.cookie = `locale=${locale}; path=/; max-age=31536000`;
-
-      // window.location.reload();
-    });
-  </script>
+  <script type="module" set:html={localeScript} />
 </div>

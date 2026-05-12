@@ -1,5 +1,5 @@
 ---
-import PricingIsland from "./pricing/PricingIsland.tsx";
+import PricingIsland from "./pricing/PricingIsland.astro";
 
 const { t, locale = "en" } = Astro.props;
 ---
@@ -19,7 +19,7 @@ const { t, locale = "en" } = Astro.props;
 		</div>
 
 		<PricingIsland
-			client:load
+
 			locale={locale}
 			monthlyLabel={t("landing.pricing.monthly")}
 			yearlyLabel={t("landing.pricing.yearly")}

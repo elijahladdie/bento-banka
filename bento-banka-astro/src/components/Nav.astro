@@ -1,8 +1,24 @@
 ---
 import { Landmark } from "@lucide/astro";
-import GlassButton from "./ui/GlassButton";
+import GlassButton from "./ui/GlassButton.astro";
 
 const { t, languages, currentLocale } = Astro.props;
+
+const localeScript = `
+(function() {
+  const select = document.getElementById("language-switcher");
+  select?.addEventListener("change", (e) => {
+    const locale = e.target.value;
+    document.cookie = \`locale=\${locale}; path=/; max-age=31536000\`;
+    window.__LOCALE__ = locale;
+    window.dispatchEvent(
+      new CustomEvent("locale-change", {
+        detail: { locale },
+      }),
+    );
+  });
+})();
+`;
 ---
 
 <nav
@@ -80,20 +96,5 @@ const { t, languages, currentLocale } = Astro.props;
     </div>
   </div>
 </nav>
-<script>
-  const select = document.getElementById("language-switcher");
 
-  select?.addEventListener("change", (e) => {
-    const locale = e.target.value;
-
-    document.cookie = `locale=${locale}; path=/; max-age=31536000`;
-
-    window.__LOCALE__ = locale;
-
-    window.dispatchEvent(
-      new CustomEvent("locale-change", {
-        detail: { locale },
-      }),
-    );
-  });
-</script>
+<script type="module" set:html={localeScript} />

@@ -1,4 +1,4 @@
-import type { PricingApiResponse, PricingInterval, PricingPlan } from "./types";
+import type { PricingApiResponse, PricingInterval, PricingPlan, PricingFeatureEntry } from "../../types";
 
 export const pricingFeatures = [
   {
@@ -87,8 +87,6 @@ export const pricingFeatures = [
     ],
   },
 ];
-
-type PricingFeatureEntry = (typeof pricingFeatures)[number];
 
 const pricingFeatureMap = Object.fromEntries(
   pricingFeatures.map((plan) => [plan.name.toLowerCase(), plan])

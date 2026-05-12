@@ -1,5 +1,5 @@
 ---
-import StatCard from "./ui/StatCard";
+import StatCard from "./ui/StatCard.astro";
 
 const { t, stats} = Astro.props;
 ---
@@ -20,7 +20,6 @@ const { t, stats} = Astro.props;
         {
           stats.map((s: any) => (
             <StatCard
-              client:load
               value={s.value}
               label={t(s.labelKey)}
               suffix={s.suffix}

@@ -1,0 +1,127 @@
+---
+import type { PricingPrice } from "../../types";
+
+interface Props {
+  name: string;
+  description: string;
+  priceAmount: number;
+  currencyCode: string;
+  billingInterval: "month" | "year";
+  features: string[];
+  popular?: boolean;
+  freeLabel: string;
+  billingMonthLabel: string;
+  billingYearLabel: string;
+  ctaLabel: string;
+  locale: string;
+}
+
+const {
+  name,
+  description,
+  priceAmount,
+  currencyCode,
+  billingInterval,
+  features,
+  popular = false,
+  freeLabel,
+  billingMonthLabel,
+  billingYearLabel,
+  ctaLabel,
+  locale,
+} = Astro.props;
+
+// Format money
+function formatMoney(amount: number, currency: string): string {
+  if (amount === 0) return freeLabel;
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+    }).format(amount);
+  } catch {
+    return `${amount} ${currency}`;
+  }
+}
+
+const formattedPrice = formatMoney(priceAmount, currencyCode);
+const billingLabel =
+  billingInterval === "month" ? billingMonthLabel : billingYearLabel;
+const visibleFeatures = (features || []).slice(0, 4);
+---
+
+<div
+  class:list={[
+    "glass-card pricing-card",
+    { "is-popular": popular },
+  ]}
+>
+  <div class="flex h-full flex-col">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h3 class="text-xl font-semibold text-[var(--text-primary)]">
+          {name}
+        </h3>
+        <p class="mt-2 whitespace-pre-line text-sm leading-6 text-[var(--text-secondary)]">
+          {description}
+        </p>
+      </div>
+      {
+        popular && (
+          <span class="inline-flex shrink-0 rounded-full border border-[rgba(110,180,80,0.55)] bg-[rgba(110,180,80,0.18)] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[rgba(110,180,80,0.9)]">
+            Popular
+          </span>
+        )
+      }
+    </div>
+    <div class="mt-8 flex items-end gap-3">
+      <span class="text-4xl font-semibold tracking-tight text-[var(--text-primary)]">
+        {formattedPrice}
+        {" / "}
+      </span>
+      <span class="pb-1 text-sm text-[var(--text-secondary)]">
+        {billingLabel}
+      </span>
+    </div>
+    <p class="text-sm py-2 mt-2 text-[var(--text-muted)] font-bold">
+      What's included
+    </p>
+    <div class="mt-0 w-full rounded-2xl text-left">
+      <div class="space-y-3 text-sm leading-6 text-[var(--text-secondary)]">
+        {
+          visibleFeatures.map((feature) => (
+            <div class="flex items-start gap-3">
+              <svg
+                class="mt-1 h-4 w-4 shrink-0"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M20 6L9 17l-5-5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>{feature}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="mt-8">
+      <button
+        type="button"
+        class:list={[
+          "btn w-full rounded-full px-5 py-3 text-sm font-semibold",
+          { "btn-secondary": popular, "btn-primary": !popular },
+        ]}
+        aria-label={`${ctaLabel} ${name}`}
+      >
+        {ctaLabel}
+      </button>
+    </div>
+  </div>
+</div>

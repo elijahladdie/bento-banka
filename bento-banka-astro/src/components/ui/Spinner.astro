@@ -1,0 +1,11 @@
+---
+import type { SpinnerProps } from "../../types";
+const { size = 16 } = Astro.props as SpinnerProps;
+---
+
+<div class="spinner" style={`width: ${size}px; height: ${size}px;`} />
+
+<style>
+.spinner{border-radius:9999px;border:2px solid rgba(255,255,255,0.06);border-top-color:currentColor;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>

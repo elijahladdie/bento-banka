@@ -1,0 +1,24 @@
+---
+import type { GlassButtonProps } from "../../types";
+import Spinner from './Spinner.astro';
+
+const { variant = 'primary', loading = false, loadingText = 'Loading...', fullWidth = false, disabled = false, class: cls = '' } = Astro.props as GlassButtonProps;
+
+const variantClass = {
+  primary: 'btn-primary',
+  secondary: 'btn-secondary',
+  danger: 'btn-danger',
+  icon: 'btn-icon',
+}[variant];
+---
+
+<button class={`${variantClass} glass-surface-lift ${fullWidth ? 'w-full' : ''} ${cls}`} disabled={disabled || loading}>
+  {loading ? (
+    <>
+      <Spinner size={16} />
+      <span>{loadingText}</span>
+    </>
+  ) : (
+    <slot />
+  )}
+</button>

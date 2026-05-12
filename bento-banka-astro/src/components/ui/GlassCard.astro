@@ -1,0 +1,11 @@
+---
+import type { GlassCardProps } from "../../types";
+
+const { heavy = false, padding = 'md', nohover = false, class: cls = '' } = Astro.props as GlassCardProps;
+
+const paddings: Record<string,string> = { none: '', sm: 'p-4', md: 'p-6', lg: 'p-8' };
+---
+
+<div data-nohover={nohover ? "true" : "false"} class={`${heavy ? 'glass-card-heavy' : 'glass-card'} ${paddings[padding] || ''} ${nohover ? 'hover:transform-none' : ''} ${cls}`}>
+  <slot />
+</div>

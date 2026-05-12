@@ -1,0 +1,166 @@
+---
+import type { PricingIslandProps, PricingPrice } from "../../types";
+import PricingPlanCard from "./PricingPlanCard.astro";
+
+const props = Astro.props as PricingIslandProps;
+
+const componentId = `pricing-island-${Math.random().toString(36).slice(2)}`;
+
+// Fetch pricing data server-side
+let plans: PricingPrice[] = [];
+let error: string | null = null;
+let loadingInterval = "year";
+
+try {
+  const apiUrl = new URL("/api/pricing", Astro.url);
+  apiUrl.searchParams.set("interval", loadingInterval);
+  const response = await fetch(apiUrl.toString());
+  
+  if (response.ok) {
+    const data = await response.json();
+    plans = data?.plans || [];
+  } else {
+    error = `Failed to load pricing (${response.status})`;
+  }
+} catch (err) {
+  error = err instanceof Error ? err.message : "Failed to load pricing";
+}
+
+const toggleScript = `
+(function() {
+  const rootId = '${componentId}';
+  const intervalButtons = Array.from(document.querySelectorAll(\`#\${rootId} .interval-toggle\`));
+  const loadingEl = document.getElementById(\`\${rootId}-loading\`);
+  const gridEl = document.getElementById(\`\${rootId}-grid\`);
+  const errorEl = document.getElementById(\`\${rootId}-error\`);
+  const errorDetail = document.getElementById(\`\${rootId}-error-detail\`);
+  const retryBtn = document.getElementById(\`\${rootId}-retry\`);
+  let interval = 'year';
+
+  function setActiveInterval(button) {
+    intervalButtons.forEach(b => b.classList.toggle('active', b === button));
+  }
+
+  async function loadPricing() {
+    loadingEl.classList.remove('hidden');
+    errorEl.classList.add('hidden');
+    gridEl.classList.add('hidden');
+
+    try {
+      const params = new URLSearchParams({
+        interval,
+        freeLabel: '${props.freeLabel}',
+        billingMonthLabel: '${props.billingMonthLabel}',
+        billingYearLabel: '${props.billingYearLabel}',
+        ctaLabel: '${props.ctaLabel}',
+        locale: '${props.locale}',
+      });
+
+      const response = await fetch(\`/api/render-pricing-cards?\${params}\`);
+      if (!response.ok) throw new Error(\`Status \${response.status}\`);
+      
+      const html = await response.text();
+      gridEl.innerHTML = html;
+      
+      loadingEl.classList.add('hidden');
+      gridEl.classList.remove('hidden');
+    } catch (err) {
+      loadingEl.classList.add('hidden');
+      errorEl.classList.remove('hidden');
+      errorDetail.textContent = err instanceof Error ? err.message : '${props.errorBody}';
+    }
+  }
+
+  intervalButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      interval = btn.dataset.interval || 'year';
+      setActiveInterval(btn);
+      loadPricing();
+    });
+  });
+
+  retryBtn?.addEventListener('click', () => loadPricing());
+  setActiveInterval(intervalButtons.find(b => b.dataset.interval === interval) || intervalButtons[0]);
+})();
+`;
+
+---
+
+---
+
+<div class="mx-auto max-w-7xl">
+  <div class="mb-6">
+    <div class="inline-flex items-center gap-3">
+      <span class="text-sm text-[var(--text-secondary)]">{props.toggleLabel}</span>
+      <div class="rounded-full bg-[rgba(255,255,255,0.04)] p-1 inline-flex" role="tablist">
+        <button class="interval-toggle px-4 py-2 text-sm font-semibold" data-interval="month">{props.monthlyLabel}</button>
+        <button class="interval-toggle px-4 py-2 text-sm font-semibold" data-interval="year">{props.yearlyLabel}</button>
+      </div>
+    </div>
+  </div>
+
+  <div id={componentId}>
+    <div id={`${componentId}-state`} class="space-y-4">
+      {error && (
+        <div id={`${componentId}-error`} class="">
+          <div class="mx-auto max-w-2xl text-center">
+            <div class="flex flex-col items-center gap-4">
+              <div class="flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(248,113,113,0.35)] bg-[rgba(248,113,113,0.12)] text-[var(--error-text)]">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-2xl font-semibold text-[var(--text-primary)]">{props.errorTitle}</h3>
+                <p class="mt-2 text-sm leading-7 text-[var(--text-secondary)]">{props.errorBody}</p>
+                <p id={`${componentId}-error-detail`} class="mt-3 text-xs text-[var(--text-muted)]">{error}</p>
+              </div>
+              <button id={`${componentId}-retry`} type="button" class="btn-primary glass-surface-lift inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold" aria-label={props.retryLabel}>{props.retryLabel}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!error && plans.length > 0 && (
+        <div id={`${componentId}-grid`} class="pricing-grid">
+          {plans.map((plan) => (
+            <PricingPlanCard
+              name={plan.name}
+              description={plan.description}
+              priceAmount={plan.priceAmount}
+              currencyCode={plan.currencyCode}
+              billingInterval={plan.billingInterval}
+              features={plan.features}
+              popular={plan.popular}
+              freeLabel={props.freeLabel}
+              billingMonthLabel={props.billingMonthLabel}
+              billingYearLabel={props.billingYearLabel}
+              ctaLabel={props.ctaLabel}
+              locale={props.locale}
+            />
+          ))}
+        </div>
+      )}
+
+      {!error && plans.length === 0 && (
+        <div id={`${componentId}-loading`} class="">
+          <div class="flex items-center gap-3 text-sm text-[var(--text-secondary)]">
+            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="31.4 31.4"></circle>
+            </svg>
+            <span id={`${componentId}-loading-label`}>{props.loadingTitle}</span>
+          </div>
+          <p id={`${componentId}-loading-body`} class="text-sm text-[var(--text-secondary)]">{props.loadingBody}</p>
+          <div class="mt-4">
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div class="glass-card h-48"></div>
+              <div class="glass-card h-48"></div>
+              <div class="glass-card h-48"></div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <script type="module" set:html={toggleScript} />
