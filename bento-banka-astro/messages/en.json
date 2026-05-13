@@ -84,7 +84,7 @@
       "toggleLabel": "Choose a billing interval",
       "popular": "Popular",
       "trial": "Trial",
-      "cta": "Get Started",
+      "cta": "Subscribe",
       "loadingTitle": "Loading pricing",
       "loadingBody": "Fetching the latest plans for this billing interval.",
       "errorTitle": "Pricing unavailable",

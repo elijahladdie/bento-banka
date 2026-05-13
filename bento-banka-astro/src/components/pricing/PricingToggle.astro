@@ -1,0 +1,49 @@
+---
+import Switch from "../ui/Switch.astro";
+import type { PricingInterval } from "./types";
+
+export interface Props {
+  interval?: PricingInterval;
+}
+
+const { interval = "year" } = Astro.props;
+const checked = interval === "year";
+---
+
+<div class="mx-auto my-auto flex items-center gap-3">
+  <span
+    class:list={[
+      "text-sm transition-colors duration-200",
+      checked ? "text-white/50" : "font-medium text-white",
+    ]}
+  >
+    Monthly
+  </span>
+
+  <Switch
+    checked={checked}
+    aria-label="Toggle pricing interval"
+    name="interval"
+    value={interval}
+  />
+
+  <span
+    class:list={[
+      "text-sm transition-colors duration-200",
+      checked ? "font-medium text-white" : "text-white/50",
+    ]}
+  >
+    Yearly
+  </span>
+</div>
+
+<script>
+  document.addEventListener("switch:change", (e) => {
+    const { checked } = (e as CustomEvent<{ checked: boolean }>).detail;
+    const next = checked ? "year" : "month";
+    console.log("Switch changed, next interval:", next);
+    // const url = new URL(window.location.href);
+    // url.searchParams.set("interval", next);
+    // window.location.href = url.toString();
+  });
+</script>

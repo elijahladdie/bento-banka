@@ -1,4 +1,4 @@
-import type { PricingApiResponse, PricingInterval, PricingPlan } from "./types";
+import type { PricingApiResponse, PricingInterval, PricingPlan } from "../components/pricing/types";
 
 export const pricingFeatures = [
   {
@@ -145,83 +145,90 @@ function formatTrialLabel(frequency?: number | null, interval?: string | null) {
 function getPlanDescription(productDescription?: string | null, priceDescription?: string | null) {
   return (productDescription ?? priceDescription ?? "").replace(/\s+/g, " ").trim();
 }
-
-function getBillingIntervalLabel(interval: PricingInterval | string, frequency: number) {
-  if (frequency === 1) {
-    return interval;
-  }
-
-  return `${frequency} ${interval}s`;
-}
-
 export function transformPricingResponse(
   payload: PricingApiResponse,
   selectedInterval: PricingInterval
 ): PricingPlan[] {
-  const mapped = payload.data.map((product) => {
-    const matchingPrice =
-      product.prices.find((price) => price.billingCycle?.interval === selectedInterval) ??
-      product.prices[0];
+  return payload.data
+    .map((product) => {
+      const matchingPrice =
+        product.prices.find(
+          (price) =>
+            price.billingCycle?.interval === selectedInterval
+        ) ?? product.prices[0];
 
-    const priceAmount = matchingPrice?.unitPrice?.amount ?? "0";
-    const currencyCode = matchingPrice?.unitPrice?.currencyCode ?? "USD";
-    const billingInterval = matchingPrice?.billingCycle?.interval ?? selectedInterval;
-    const billingFrequency = matchingPrice?.billingCycle?.frequency ?? 1;
+      const priceAmount =
+        matchingPrice?.unitPrice?.amount ?? "0";
 
-    const order = toNumber(product.customData?.order, Number.MAX_SAFE_INTEGER);
-    const popular = String(product.customData?.popular) === "true";
-    const featureData = pricingFeatureMap[product.name.toLowerCase()] ?? null;
-    const featureTitle = featureData?.title ?? product.name;
-    const featureSubtitle = featureData?.subtitle ?? "";
-    const featureInfo = featureData?.specificInfo ?? getPlanDescription(product.description, matchingPrice?.description);
+      const currencyCode =
+        matchingPrice?.unitPrice?.currencyCode ?? "USD";
 
-    return {
-      id: product.id,
-      name: product.name,
-      description: getPlanDescription(product.description, matchingPrice?.description),
-      order,
-      popular,
-      featureTitle,
-      featureSubtitle,
-      featureInfo,
-      features: featureData?.features ?? [],
-      priceAmount,
-      currencyCode,
-      billingInterval,
-      billingFrequency,
-      trialLabel: formatTrialLabel(
-        matchingPrice?.trialPeriod?.frequency ?? null,
-        matchingPrice?.trialPeriod?.interval ?? null
-      ),
-    };
-  });
+      const billingInterval =
+        matchingPrice?.billingCycle?.interval ??
+        selectedInterval;
 
-  // STEP 1: split
-  const popularPlan = mapped.find((p) => p.popular);
-  const normalPlans = mapped.filter((p) => !p.popular);
+      const billingFrequency =
+        matchingPrice?.billingCycle?.frequency ?? 1;
 
-  // STEP 2: sort normal plans
-  const sortedNormals = normalPlans.sort((a, b) => a.order - b.order);
+      const popular =
+        String(product.customData?.popular) === "true";
 
-  // STEP 3: compute middle index
-  const middleIndex = Math.floor(sortedNormals.length / 2);
+      const featureData =
+        pricingFeatureMap[
+          product.name.toLowerCase()
+        ] ?? null;
 
-  // STEP 4: inject popular in middle
-  if (popularPlan) {
-    sortedNormals.splice(middleIndex, 0, popularPlan);
-  }
+      const featureTitle =
+        featureData?.title ?? product.name;
 
-  return sortedNormals;
+      const featureSubtitle =
+        featureData?.subtitle ?? "";
+
+      const featureInfo =
+        featureData?.specificInfo ??
+        getPlanDescription(
+          product.description,
+          matchingPrice?.description
+        );
+
+      return {
+        id: product.id,
+        name: product.name,
+        description: getPlanDescription(
+          product.description,
+          matchingPrice?.description
+        ),
+        popular,
+        featureTitle,
+        featureSubtitle,
+        featureInfo,
+        features: featureData?.features ?? [],
+        priceAmount,
+        currencyCode,
+        billingInterval,
+        billingFrequency,
+        trialLabel: formatTrialLabel(
+          matchingPrice?.trialPeriod?.frequency ?? null,
+          matchingPrice?.trialPeriod?.interval ?? null
+        ),
+
+        // helper field for sorting
+        numericPrice: Number(priceAmount),
+      };
+    })
+
+    // sort directly by price
+    .sort((a, b) => a.numericPrice - b.numericPrice)
+
+    // remove helper field
+    .map(({ numericPrice, ...plan }) => plan);
 }
 
 export function formatBillingLabel(
   plan: PricingPlan,
-  billedLabel: string,
   billingMonthLabel: string,
   billingYearLabel: string
 ) {
   const intervalLabel = plan.billingInterval === "year" ? billingYearLabel : billingMonthLabel;
-  const frequencyLabel = getBillingIntervalLabel(plan.billingInterval, plan.billingFrequency);
-
-  return `${billedLabel} ${frequencyLabel} (${intervalLabel})`;
+  return intervalLabel
 }
